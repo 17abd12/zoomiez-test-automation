@@ -1,0 +1,1 @@
+pm.test('status 201 or 400', () => { pm.expect([201, 400]).to.include(pm.response.code); });

@@ -1,0 +1,1 @@
+pm.test('status 400 or 404', () => { pm.expect([400, 404]).to.include(pm.response.code); });

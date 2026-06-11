@@ -1,0 +1,1 @@
+pm.test('status 200', () => pm.response.to.have.status(200)); const b = pm.response.json(); pm.test('has students', () => pm.expect(b).to.have.property('students')); pm.test('has teachers', () => pm.expect(b).to.have.property('teachers'));

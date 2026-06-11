@@ -1,0 +1,1 @@
+pm.test('status 200 or 401', () => { pm.expect([200, 401]).to.include(pm.response.code); }); if(pm.response.code === 200) { const body = pm.response.json(); pm.test('has token', () => pm.expect(body).to.have.property('token')); pm.environment.set('jwt_token_student', body.token); }
