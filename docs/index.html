@@ -84,6 +84,8 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(0,0,0,0.35);
     }
+    .card[data-no-link] { cursor: default; }
+    .card[data-no-link]:hover { transform: none; border-color: var(--border); box-shadow: none; }
     .card-icon {
       width: 38px; height: 38px; border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
@@ -93,6 +95,10 @@
     .card-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
     .card-meta { font-size: 11px; color: var(--muted); margin-top: 10px; }
     .card-meta strong { color: var(--text); }
+    .card-tag {
+      display: inline-block; padding: 1px 7px; border-radius: 20px; font-size: 10px; font-weight: 600;
+      margin-top: 8px; background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.25);
+    }
 
     .icon-playwright { background: rgba(45,212,191,0.15); }
     .icon-cypress    { background: rgba(34,197,94,0.15); }
@@ -114,6 +120,20 @@
     .stat-teal  { color: var(--teal); }
     .stat-acc   { color: var(--accent); }
     .stat-y     { color: var(--yellow); }
+
+    /* ── Flow banner ── */
+    .flow-banner {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 28px; margin-bottom: 40px;
+      font-size: 13px;
+    }
+    .flow-banner h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 14px; }
+    .flow-steps { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .flow-step {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 14px; font-size: 12px; font-family: monospace; color: #a5b4fc;
+    }
+    .flow-arrow { color: var(--muted); font-size: 18px; }
 
     /* ── Quick commands ── */
     .cmds { margin-bottom: 40px; }
@@ -142,13 +162,6 @@
     .pill-blue   { background: rgba(59,130,246,0.15);  color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
     .pill-green  { background: rgba(34,197,94,0.15);   color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
 
-    /* ── CI badges ── */
-    .ci-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
-    .ci-badge {
-      padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600;
-      background: var(--surface); border: 1px solid var(--border); color: var(--muted);
-    }
-
     /* ── Footer ── */
     footer {
       text-align: center; padding: 24px;
@@ -164,7 +177,7 @@
   <div class="logo-box">Z</div>
   <div>
     <h1>Zoomiez — Test Reports Hub &nbsp;<span class="badge">LIVE</span></h1>
-    <p>Playwright E2E &nbsp;·&nbsp; Cypress E2E &nbsp;·&nbsp; k6 Load &nbsp;·&nbsp; Newman Contract &nbsp;·&nbsp; pytest Backend</p>
+    <p>Playwright E2E &nbsp;·&nbsp; Cypress E2E &nbsp;·&nbsp; k6 Load &nbsp;·&nbsp; Newman Contract &nbsp;·&nbsp; pytest Backend &nbsp;·&nbsp; Allure Combined</p>
   </div>
 </header>
 
@@ -179,50 +192,79 @@
     <div class="stat"><span class="stat-value stat-y">15+</span><span class="stat-label">Stubbed Routes</span></div>
   </div>
 
+  <!-- ── Local flow ── -->
+  <p class="section-title">Local Report Flow</p>
+  <div class="flow-banner">
+    <h2>Run tests → reports written to docs/ → commit → push → GitHub Pages</h2>
+    <div class="flow-steps">
+      <div class="flow-step">npm run test:playwright</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">docs/playwright/</div>
+      <span class="flow-arrow">·</span>
+      <div class="flow-step">npm run test:cypress:run</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">docs/cypress/</div>
+      <span class="flow-arrow">·</span>
+      <div class="flow-step">npm run test:newman</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">docs/newman/</div>
+      <span class="flow-arrow">·</span>
+      <div class="flow-step">npm run test:backend</div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">docs/pytest/</div>
+    </div>
+  </div>
+
   <!-- ── Test suite cards ── -->
-  <p class="section-title">Test Suites</p>
+  <p class="section-title">Test Suites — Click to View Report</p>
   <div class="grid grid-3">
 
-    <a class="card" href="./reports/allure/index.html">
+    <a class="card" href="./playwright/index.html">
       <div class="card-icon icon-playwright">🎭</div>
       <div class="card-title">Playwright E2E</div>
       <div class="card-desc">Full user-flow tests across all 4 roles (self-student, enrolled-student, teacher, institution). JWT mint trick for instant auth — no real login calls.</div>
-      <div class="card-meta"><strong>127</strong> test cases &nbsp;·&nbsp; <strong>5</strong> browser projects &nbsp;·&nbsp; allure-playwright</div>
+      <div class="card-meta"><strong>127</strong> test cases &nbsp;·&nbsp; <strong>5</strong> browser projects &nbsp;·&nbsp; Chromium</div>
+      <span class="card-tag">npm run test:playwright</span>
     </a>
 
-    <a class="card" href="./reports/allure/index.html">
+    <a class="card" href="./cypress/index.html">
       <div class="card-icon icon-cypress">🌲</div>
       <div class="card-title">Cypress E2E</div>
       <div class="card-desc">Component-level and critical-path tests. cy.loginAs() command handles JWT injection. cy.stubSensitiveApis() intercepts all 15+ paid-API routes.</div>
-      <div class="card-meta"><strong>4</strong> suites &nbsp;·&nbsp; Video recording &nbsp;·&nbsp; allure-cypress</div>
+      <div class="card-meta"><strong>4</strong> suites &nbsp;·&nbsp; Video recording &nbsp;·&nbsp; mochawesome HTML</div>
+      <span class="card-tag">npm run test:cypress:run</span>
     </a>
 
-    <a class="card" href="./reports/allure/index.html">
+    <a class="card" href="./k6/index.html">
       <div class="card-icon icon-k6">⚡</div>
       <div class="card-title">k6 Load Tests</div>
-      <div class="card-desc">VU-based load tests for hot endpoints: login, random papers, dashboard analytics. Enforces p95 SLO thresholds. Runs nightly at 2am UTC.</div>
+      <div class="card-desc">VU-based load tests for hot endpoints: login, papers, dashboard analytics. Enforces p95 SLO thresholds. View CLI output or GitHub Actions logs.</div>
       <div class="card-meta">login p95 &lt;500ms &nbsp;·&nbsp; papers p95 &lt;800ms</div>
+      <span class="card-tag">npm run test:k6</span>
     </a>
 
-    <a class="card" href="./reports/allure/index.html">
+    <a class="card" href="./newman/index.html">
       <div class="card-icon icon-newman">📬</div>
       <div class="card-title">Newman Contract Tests</div>
       <div class="card-desc">Full Postman collection run via Newman CLI. Verifies all API contracts: status codes, response shapes, auth headers, error messages.</div>
-      <div class="card-meta">Runs after backend-tests job &nbsp;·&nbsp; allure-newman</div>
+      <div class="card-meta">htmlextra reporter &nbsp;·&nbsp; Full request/response log</div>
+      <span class="card-tag">npm run test:newman</span>
     </a>
 
-    <a class="card" href="./reports/allure/index.html">
+    <a class="card" href="./pytest/index.html">
       <div class="card-icon icon-pytest">🐍</div>
       <div class="card-title">pytest Backend</div>
       <div class="card-desc">Flask integration tests against a real MongoDB. TEST_PREFIX auto-cleanup — no manual teardown. All OpenAI/Resend/R2/Mistral calls mocked.</div>
-      <div class="card-meta"><strong>40+</strong> tests &nbsp;·&nbsp; 4 modules &nbsp;·&nbsp; self-cleaning</div>
+      <div class="card-meta"><strong>40+</strong> tests &nbsp;·&nbsp; 4 modules &nbsp;·&nbsp; pytest-html report</div>
+      <span class="card-tag">npm run test:backend</span>
     </a>
 
-    <a class="card" href="./reports/allure/index.html">
+    <a class="card" href="./allure/index.html">
       <div class="card-icon" style="background:rgba(99,102,241,0.15);">📊</div>
-      <div class="card-title">Allure Report</div>
-      <div class="card-desc">Unified report from all test frameworks — Playwright + pytest + Newman. Published to GitHub Pages after every CI run.</div>
-      <div class="card-meta">GitHub Pages &nbsp;·&nbsp; Auto-published on push</div>
+      <div class="card-title">Allure Combined Report</div>
+      <div class="card-desc">Unified Allure report from Playwright + pytest + Newman allure-results. Generated by GitHub Actions on each push to main — not available locally by default.</div>
+      <div class="card-meta">GitHub Pages &nbsp;·&nbsp; Auto-published on push &nbsp;·&nbsp; allure generate</div>
+      <span class="card-tag">npm run test:allure</span>
     </a>
 
   </div>
@@ -233,27 +275,27 @@
     <div class="cmd-grid">
       <div class="cmd-block">
         <div class="cmd-label">Playwright (auto-starts frontend)</div>
-        <div class="cmd-code">cd Zoomiez-test-Documentation<br>npm run test:playwright</div>
+        <div class="cmd-code">cd Zoomiez-test-Documentation<br>npm run test:playwright<br><br># View report:<br>npm run test:playwright:report</div>
       </div>
       <div class="cmd-block">
-        <div class="cmd-label">Cypress run</div>
-        <div class="cmd-code">cd Zoomiez-test-Documentation<br>npm run test:cypress:run</div>
+        <div class="cmd-label">Cypress E2E</div>
+        <div class="cmd-code">cd Zoomiez-test-Documentation<br>npm run test:cypress:run<br><br># Open interactive:<br>npm run test:cypress:open</div>
       </div>
       <div class="cmd-block">
-        <div class="cmd-label">Backend pytest</div>
-        <div class="cmd-code">cd Zoomiez-test-Documentation/backend-tests<br>pytest . -v</div>
+        <div class="cmd-label">pytest Backend</div>
+        <div class="cmd-code">cd Zoomiez-test-Documentation<br>npm run test:backend<br><br># Then open:<br>docs/pytest/index.html</div>
       </div>
       <div class="cmd-block">
-        <div class="cmd-label">Newman contract tests</div>
-        <div class="cmd-code">cd Zoomiez-test-Documentation<br>npm run test:newman</div>
+        <div class="cmd-label">Newman API contracts</div>
+        <div class="cmd-code">cd Zoomiez-test-Documentation<br>npm run test:newman<br><br># Then open:<br>docs/newman/index.html</div>
       </div>
       <div class="cmd-block">
-        <div class="cmd-label">k6 load — login endpoint</div>
-        <div class="cmd-code">k6 run k6/scenarios/login-load.js</div>
+        <div class="cmd-label">k6 load tests + HTML reports</div>
+        <div class="cmd-code">npm run test:k6<br># → docs/k6/login.html<br># → docs/k6/papers.html<br># → docs/k6/dashboard.html<br><br>npm run test:k6:screenshots<br># → docs/k6/screenshots/*.png</div>
       </div>
       <div class="cmd-block">
-        <div class="cmd-label">Generate + open Allure report</div>
-        <div class="cmd-code">npm run test:allure<br>npm run test:allure:open</div>
+        <div class="cmd-label">Allure combined (local)</div>
+        <div class="cmd-code">cd Zoomiez-test-Documentation<br>npm run test:allure<br>npm run test:allure:open</div>
       </div>
     </div>
   </div>
@@ -302,41 +344,26 @@
   <!-- ── CI Workflows ── -->
   <p class="section-title">CI Workflows</p>
   <div class="grid grid-3" style="margin-bottom:40px;">
-    <div class="card" style="cursor:default;">
-      <div class="card-title">🔄 playwright.yml</div>
-      <div class="card-desc">Runs all Playwright E2E on push/PR to main. Starts MongoDB + backend + frontend as services. Uploads Allure results artifact.</div>
-      <div class="card-meta">Trigger: push / PR to main</div>
-    </div>
-    <div class="card" style="cursor:default;">
-      <div class="card-title">🐍 backend-tests.yml</div>
-      <div class="card-desc">Runs pytest (40+ tests) then Newman contract tests in sequence. Uses test MongoDB. Mocks all paid APIs.</div>
-      <div class="card-meta">Trigger: push / PR to main</div>
-    </div>
-    <div class="card" style="cursor:default;">
-      <div class="card-title">⚡ k6.yml</div>
-      <div class="card-desc">Nightly load tests at 2am UTC. Enforces p95 SLO thresholds. Also triggerable manually with custom VUs + duration.</div>
-      <div class="card-meta">Trigger: cron 0 2 * * * + manual</div>
-    </div>
-    <div class="card" style="cursor:default;">
-      <div class="card-title">📊 allure-pages.yml</div>
-      <div class="card-desc">Downloads all Allure artifacts from test workflows, generates unified Allure report, publishes to GitHub Pages.</div>
-      <div class="card-meta">Trigger: after test workflows complete</div>
-    </div>
-    <div class="card" style="cursor:default;">
+    <div class="card" data-no-link style="cursor:default;">
       <div class="card-title">✅ TypeScript Check</div>
-      <div class="card-desc">Runs tsc --noEmit on the Frontend project to catch type errors before any E2E tests run.</div>
-      <div class="card-meta">Part of allure-pages.yml</div>
+      <div class="card-desc">Runs tsc --noEmit on push/PR to main. Catches type errors early. Fast — no test runtime needed.</div>
+      <div class="card-meta">Trigger: push / PR to main</div>
+    </div>
+    <div class="card" data-no-link style="cursor:default;">
+      <div class="card-title">🚀 deploy-reports</div>
+      <div class="card-desc">Generates Allure report from committed allure-results/, then publishes the entire docs/ directory to GitHub Pages.</div>
+      <div class="card-meta">Trigger: push to main + manual</div>
     </div>
   </div>
 
   <!-- ── Auth strategy ── -->
   <p class="section-title">Auth Strategy</p>
   <div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:40px;">
-    <div class="card" style="cursor:default;">
+    <div class="card" data-no-link style="cursor:default;">
       <div class="card-title">JWT Mint Trick (default)</div>
-      <div class="card-desc">Tests sign JWTs with <code style="color:#a5b4fc">JWT_SECRET_KEY</code> directly using HS256. Token injected into Redux localStorage (<code style="color:#a5b4fc">app_state</code>). No real login calls, no Resend OTP emails triggered. Auth setup runs once per role, saves storageState files to <code style="color:#a5b4fc">.auth/</code>.</div>
+      <div class="card-desc">Tests sign JWTs with <code style="color:#a5b4fc">JWT_SECRET_KEY</code> directly using HS256. Token injected into Redux localStorage (<code style="color:#a5b4fc">app_state</code> key, with <code style="color:#a5b4fc">isLoggedIn: true</code>). No real login calls, no Resend OTP emails triggered. Auth setup runs once per role, saves storageState files to <code style="color:#a5b4fc">.auth/</code>.</div>
     </div>
-    <div class="card" style="cursor:default;">
+    <div class="card" data-no-link style="cursor:default;">
       <div class="card-title">Real Login (REAL_LOGIN=true)</div>
       <div class="card-desc">Set <code style="color:#a5b4fc">REAL_LOGIN=true</code> in <code style="color:#a5b4fc">.env</code> and fill real credentials in <code style="color:#a5b4fc">fixtures/users.json</code>. Auth setup uses the actual login UI. Requires test accounts to exist in the database. Useful for smoke-testing auth flows end-to-end.</div>
     </div>
@@ -346,7 +373,7 @@
 
 <footer>
   Zoomiez Test Documentation &nbsp;·&nbsp; Auto-published via GitHub Actions &nbsp;·&nbsp;
-  <a href="./reports/allure/index.html">View Allure Report</a>
+  <a href="./allure/index.html">Allure Combined Report</a>
 </footer>
 
 </body>

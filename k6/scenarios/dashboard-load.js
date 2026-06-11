@@ -7,6 +7,8 @@
 import http from 'k6/http';
 import { check, group, sleep } from 'k6';
 import { Rate } from 'k6/metrics';
+import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
+import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 
 const BASE_URL = __ENV.API_BASE_URL || 'http://localhost:5000';
 const TOKEN = __ENV.LOAD_TEST_TOKEN || '';
@@ -52,4 +54,11 @@ export default function () {
   });
 
   sleep(1);
+}
+
+export function handleSummary(data) {
+  return {
+    'docs/k6/dashboard.html': htmlReport(data),
+    stdout: textSummary(data, { indent: ' ', enableColors: true }),
+  };
 }

@@ -1,7 +1,8 @@
 name: deploy-reports
 
-# Publishes the committed reports + screenshots (docs/) to GitHub Pages so the
-# Playwright/Allure/Newman/k6 HTML reports are viewable online — portfolio link.
+# Publishes docs/ to GitHub Pages — the hub + all committed reports.
+# Playwright/Cypress/Newman/pytest reports are committed after local runs.
+# Allure is generated here from committed allure-results/ (needs JRE).
 # Enable once: repo Settings → Pages → Source = GitHub Actions.
 on:
   push:
@@ -31,21 +32,23 @@ jobs:
           node-version: 20
           cache: npm
 
-      - uses: actions/setup-java@v4   # Allure CLI needs a JRE
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
       - run: npm ci
 
-      # Build the Allure HTML report from committed allure-results into docs/reports/allure
-      - run: npx allure generate allure-results --clean -o docs/reports/allure
+      # Generate Allure HTML from committed allure-results/ into docs/allure/
+      - name: Generate Allure report
+        run: npx allure generate allure-results --clean -o docs/allure
+        continue-on-error: true   # skip gracefully if allure-results/ is empty
 
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: docs      # docs/index.html (hub) + docs/reports/allure/ (generated)
+          path: docs   # hub + playwright/ + cypress/ + newman/ + pytest/ + allure/
 
       - id: deployment
         uses: actions/deploy-pages@v4

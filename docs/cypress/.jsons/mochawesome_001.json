@@ -1,0 +1,195 @@
+{
+  "stats": {
+    "suites": 2,
+    "tests": 2,
+    "passes": 0,
+    "pending": 0,
+    "failures": 2,
+    "start": "2026-06-11T10:35:10.853Z",
+    "end": "2026-06-11T10:35:16.258Z",
+    "duration": 5405,
+    "testsRegistered": 4,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 2,
+    "hasSkipped": true
+  },
+  "results": [
+    {
+      "uuid": "a6496dc2-9d82-4ca3-a358-d3a893bbe508",
+      "title": "",
+      "fullFile": "cypress\\e2e\\teacher\\evaluation.cy.ts",
+      "file": "cypress\\e2e\\teacher\\evaluation.cy.ts",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "e4f50e50-3323-4efb-bfa5-3d39febf3976",
+          "title": "UC-TC-05: Teacher Evaluation",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "evaluation page loads and shows student/quiz selects",
+              "fullTitle": "UC-TC-05: Teacher Evaluation evaluation page loads and shows student/quiz selects",
+              "timedOut": null,
+              "duration": 3341,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": "{\n  \"title\": \"cypress-mochawesome-reporter-videos-failed\",\n  \"value\": \"cypress\\\\e2e\\\\teacher\\\\evaluation.cy.ts\"\n}",
+              "code": "cy.visit('/teacher/evaluation');\ncy.contains(/evaluation module/i, { timeout: 8000 }).should('be.visible');\ncy.contains(/Ahmed Khan/i).should('be.visible');",
+              "err": {
+                "message": "TypeError: Right-hand side of 'instanceof' is not an object\n\nThis error occurred while creating the session. Because the session setup failed, we failed the test.\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `UC-TC-05: Teacher Evaluation`",
+                "estack": "TypeError: Right-hand side of 'instanceof' is not an object\n\nThis error occurred while creating the session. Because the session setup failed, we failed the test.\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `UC-TC-05: Teacher Evaluation`\n    at module.exports (webpack://zoomiez-test-documentation/./node_modules/jsonwebtoken/sign.js:114:0)\n    at Context.eval (webpack://zoomiez-test-documentation/./cypress/support/commands.ts:55:0)",
+                "diff": null
+              },
+              "uuid": "53082fe8-e15b-4506-baf2-88cc3279e99c",
+              "parentUUID": "e4f50e50-3323-4efb-bfa5-3d39febf3976",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "submit text evaluation shows report (OpenAI stubbed)",
+              "fullTitle": "UC-TC-05: Teacher Evaluation submit text evaluation shows report (OpenAI stubbed)",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/teacher/evaluation');\ncy.get('select').first().select('student@example.com');\ncy.get('select').eq(1).select('quiz-001');\ncy.get('textarea').type('Q1a) Hydrogen and Chlorine. Q1b) Because Cl- is concentrated.');\ncy.get('button').contains(/run evaluation/i).click();\ncy.contains(/evaluation report/i, { timeout: 15000 }).should('be.visible');",
+              "err": {},
+              "uuid": "8344bf10-c703-4479-bb9b-0cce326d6790",
+              "parentUUID": "e4f50e50-3323-4efb-bfa5-3d39febf3976",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "validation error when no student selected",
+              "fullTitle": "UC-TC-05: Teacher Evaluation validation error when no student selected",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.visit('/teacher/evaluation');\ncy.get('button').contains(/run evaluation/i).click();\ncy.contains(/select student/i, { timeout: 5000 }).should('be.visible');",
+              "err": {},
+              "uuid": "a0c68f2f-56a7-4a74-bf63-5390fabec06d",
+              "parentUUID": "e4f50e50-3323-4efb-bfa5-3d39febf3976",
+              "isHook": false,
+              "skipped": true
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "53082fe8-e15b-4506-baf2-88cc3279e99c"
+          ],
+          "pending": [],
+          "skipped": [
+            "8344bf10-c703-4479-bb9b-0cce326d6790",
+            "a0c68f2f-56a7-4a74-bf63-5390fabec06d"
+          ],
+          "duration": 3341,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        },
+        {
+          "uuid": "f10fed68-2e98-4836-8bc5-1da3ef4c292c",
+          "title": "UC-TC-04: Quiz Print — Light Background",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "quiz print page has light background masthead",
+              "fullTitle": "UC-TC-04: Quiz Print — Light Background quiz print page has light background masthead",
+              "timedOut": null,
+              "duration": 1762,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": "{\n  \"title\": \"cypress-mochawesome-reporter-videos-failed\",\n  \"value\": \"cypress\\\\e2e\\\\teacher\\\\evaluation.cy.ts\"\n}",
+              "code": "// Inject print payload\ncy.window().then((win) => {\n    win.localStorage.setItem('quiz_print_payload', JSON.stringify({\n        quizTitle: 'Chemistry MCQ Test',\n        subject: 'Chemistry',\n        level: 'O-Level',\n        quizType: 'MCQ',\n        date: '2024-03-15',\n        teacherName: 'Test Teacher',\n        questions: [\n            { question_number: 1, question_text: 'Q1 text?', options: { A: 'A', B: 'B', C: 'C', D: 'D' }, marks: 1 },\n        ],\n        totalMarks: 1,\n    }));\n});\ncy.visit('/teacher/quizzes/print');\ncy.get('[data-testid=\"quiz-print-masthead\"], .print-masthead').should('exist');\n// Background should NOT be dark\ncy.get('[data-testid=\"quiz-print-masthead\"], .print-masthead').should(($el) => {\n    const bg = window.getComputedStyle($el[0]).backgroundColor;\n    expect(bg).not.to.equal('rgb(30, 41, 59)'); // #1e293b\n});",
+              "err": {
+                "message": "TypeError: Right-hand side of 'instanceof' is not an object\n\nThis error occurred while creating the session. Because the session setup failed, we failed the test.\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `UC-TC-04: Quiz Print — Ligh...`",
+                "estack": "TypeError: Right-hand side of 'instanceof' is not an object\n\nThis error occurred while creating the session. Because the session setup failed, we failed the test.\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `UC-TC-04: Quiz Print — Ligh...`\n    at module.exports (webpack://zoomiez-test-documentation/./node_modules/jsonwebtoken/sign.js:114:0)\n    at Context.eval (webpack://zoomiez-test-documentation/./cypress/support/commands.ts:55:0)",
+                "diff": null
+              },
+              "uuid": "21ceb2db-fa78-4886-9b8c-e528a0c591de",
+              "parentUUID": "f10fed68-2e98-4836-8bc5-1da3ef4c292c",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "21ceb2db-fa78-4886-9b8c-e528a0c591de"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 1762,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "docs\\cypress\\.jsons",
+        "charts": true,
+        "reportPageTitle": "Zoomiez — Cypress E2E",
+        "embeddedScreenshots": true,
+        "inlineAssets": true,
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.2"
+    }
+  }
+}

@@ -7,6 +7,8 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { Rate, Trend } from 'k6/metrics';
+import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
+import { textSummary } from 'https://jslib.k6.io/k6-summary/0.0.1/index.js';
 
 const errorRate = new Rate('errors');
 const loginDuration = new Trend('login_duration');
@@ -50,4 +52,11 @@ export default function () {
   loginDuration.add(res.timings.duration);
 
   sleep(1);
+}
+
+export function handleSummary(data) {
+  return {
+    'docs/k6/login.html': htmlReport(data),
+    stdout: textSummary(data, { indent: ' ', enableColors: true }),
+  };
 }

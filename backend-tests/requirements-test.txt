@@ -1,4 +1,5 @@
 pytest>=8.0.0
+pytest-html>=4.0.0
 pytest-mock>=3.14.0
 responses>=0.25.0
 moto[s3]>=5.0.0
