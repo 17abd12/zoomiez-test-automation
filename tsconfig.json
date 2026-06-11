@@ -13,8 +13,7 @@
   },
   "include": [
     "playwright/**/*.ts",
-    "cypress/**/*.ts",
-    "mocks/**/*.ts"
+    "cypress/**/*.ts"
   ],
   "exclude": [
     "node_modules",
