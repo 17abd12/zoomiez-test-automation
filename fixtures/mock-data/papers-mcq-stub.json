@@ -1,0 +1,33 @@
+{
+  "paper_type": "mcq",
+  "subject": "Chemistry",
+  "level": "O-Level",
+  "variant": "Paper 1",
+  "year": "2023",
+  "session": "May/June",
+  "questions": [
+    {
+      "question_number": 1,
+      "question_text": "Which element has the atomic number 6?",
+      "options": { "A": "Nitrogen", "B": "Carbon", "C": "Oxygen", "D": "Boron" },
+      "correct_answer": "B",
+      "topic": "Atomic Structure"
+    },
+    {
+      "question_number": 2,
+      "question_text": "What type of bond forms between Na and Cl?",
+      "options": { "A": "Covalent", "B": "Metallic", "C": "Ionic", "D": "Hydrogen" },
+      "correct_answer": "C",
+      "topic": "Bonding"
+    },
+    {
+      "question_number": 3,
+      "question_text": "The pH of a neutral solution at 25°C is:",
+      "options": { "A": "0", "B": "7", "C": "14", "D": "1" },
+      "correct_answer": "B",
+      "topic": "Acids, Bases and Salts"
+    }
+  ],
+  "total_questions": 3,
+  "time_limit_minutes": 45
+}

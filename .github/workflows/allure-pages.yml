@@ -1,0 +1,82 @@
+name: Allure Report → GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ["Playwright E2E Tests", "Backend Tests (pytest) + Newman Contract Tests"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  allure-report:
+    name: Generate and Publish Allure Report
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure')
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download Playwright allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-playwright
+          path: allure-results/
+        continue-on-error: true
+
+      - name: Download Backend allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-backend
+          path: allure-results/
+        continue-on-error: true
+
+      - name: Download Newman allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results-newman
+          path: allure-results/
+        continue-on-error: true
+
+      - name: Install Allure CLI
+        run: |
+          wget -q https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
+          tar -xzf allure-2.29.0.tgz
+          export PATH="$PWD/allure-2.29.0/bin:$PATH"
+          echo "$PWD/allure-2.29.0/bin" >> $GITHUB_PATH
+
+      - name: Generate Allure report
+        run: allure generate allure-results -o docs/allure --clean
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          publish_branch: gh-pages
+          keep_files: false
+          commit_message: "chore: update allure test report"
+
+  typecheck:
+    name: TypeScript Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: Frontend/package-lock.json
+      - name: Install deps
+        working-directory: Frontend
+        run: npm ci
+      - name: Run typecheck
+        working-directory: Frontend
+        run: npm run typecheck || npx tsc --noEmit

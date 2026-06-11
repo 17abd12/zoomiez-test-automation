@@ -1,0 +1,36 @@
+{
+  "name": "zoomiez-test-documentation",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:playwright": "playwright test -c playwright/playwright.config.ts",
+    "test:playwright:ui": "playwright test --ui",
+    "test:playwright:report": "playwright show-report",
+    "test:cypress:open": "node scripts/run-cypress.js open",
+    "test:cypress:run": "node scripts/run-cypress.js run",
+    "test:k6": "k6 run k6/scenarios/all.js",
+    "test:newman": "newman run newman/zoomiez-collection.json -e newman/environments/local.json --reporters cli,allure",
+    "test:allure": "allure generate allure-results -o allure-report --clean",
+    "test:allure:open": "allure open allure-report",
+    "typecheck": "tsc --noEmit",
+    "test:all": "npm run test:playwright && npm run test:cypress:run && npm run test:newman"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20.0.0",
+    "allure-commandline": "^2.30.0",
+    "allure-cypress": "^3.0.0",
+    "allure-playwright": "^3.0.0",
+    "cross-env": "^10.1.0",
+    "cypress": "^13.0.0",
+    "msw": "^2.4.0",
+    "newman": "^6.1.0",
+    "newman-reporter-allure": "^1.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "jsonwebtoken": "^9.0.0"
+  }
+}

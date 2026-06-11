@@ -1,0 +1,40 @@
+{
+  "student_dashboard": {
+    "total_tests": 12,
+    "average_score": 72,
+    "study_streak": 5,
+    "points_achieved": 340,
+    "quizzes_completed": 3,
+    "predicted_grade": "B",
+    "recent_activity": [
+      { "type": "paper_attempt", "subject": "Chemistry", "score": 72, "date": "2024-03-15" },
+      { "type": "quiz_attempt", "quiz_title": "Bonding Quiz", "score": 80, "date": "2024-03-14" }
+    ]
+  },
+  "teacher_dashboard": {
+    "total_students": 24,
+    "active_quizzes": 3,
+    "avg_score": 68,
+    "notes_shared": 12,
+    "recent_activities": [
+      { "student": "Ahmed Khan", "action": "Submitted Chemistry Quiz", "date": "2024-03-15" }
+    ],
+    "performance_insights": {
+      "completion_rate": 87,
+      "satisfaction": 4.2,
+      "retention": 92
+    }
+  },
+  "institution_dashboard": {
+    "total_teachers": 8,
+    "total_students": 145,
+    "active_classes": 12,
+    "weekly_evaluations": 34,
+    "alerts": [
+      { "type": "warning", "message": "3 students below 50% in Chemistry" }
+    ],
+    "recent_activity": [
+      { "type": "onboarding", "email": "new-student@example.com", "date": "2024-03-15" }
+    ]
+  }
+}

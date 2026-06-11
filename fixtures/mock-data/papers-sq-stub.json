@@ -1,0 +1,32 @@
+{
+  "paper_type": "sq",
+  "subject": "Chemistry",
+  "level": "O-Level",
+  "variant": "Paper 2",
+  "year": "2023",
+  "session": "May/June",
+  "questions": [
+    {
+      "question_number": 1,
+      "root_question_id": "q1",
+      "question_text": "Describe the process of electrolysis of brine.",
+      "total_marks": 6,
+      "parts": [
+        {
+          "part_label": "a",
+          "question_text": "State the two products formed at the cathode and anode.",
+          "marks": 2,
+          "model_answer": "Cathode: Hydrogen gas. Anode: Chlorine gas."
+        },
+        {
+          "part_label": "b",
+          "question_text": "Explain why chlorine is produced at the anode and not oxygen.",
+          "marks": 4,
+          "model_answer": "Although OH- ions are present, Cl- ions are preferentially discharged because their concentration is higher and chlorine has a lower discharge potential under these conditions."
+        }
+      ]
+    }
+  ],
+  "total_marks": 6,
+  "time_limit_minutes": 75
+}

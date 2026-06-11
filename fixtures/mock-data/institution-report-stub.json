@@ -1,0 +1,46 @@
+{
+  "report_type": "student",
+  "title": "Student Performance Report — Ahmed Khan",
+  "generated_at": "2024-03-15T10:00:00Z",
+  "profile": {
+    "name": "Ahmed Khan",
+    "email": "enrolled-student@example.com",
+    "class_level": "O-Level",
+    "subject": "Chemistry",
+    "institution_name": "Test Academy"
+  },
+  "summary": {
+    "total_tests": 12,
+    "average_score": 72,
+    "pass_rate": "83%",
+    "improvement": "+8%"
+  },
+  "filters": {
+    "subject": "Chemistry",
+    "class_level": "O-Level",
+    "date_from": "",
+    "date_to": "",
+    "detail_level": "summary"
+  },
+  "topic_breakdown": [
+    { "topic": "Atomic Structure", "percentage": 85 },
+    { "topic": "Bonding", "percentage": 70 },
+    { "topic": "Electrolysis", "percentage": 60 },
+    { "topic": "Organic Chemistry", "percentage": 75 }
+  ],
+  "insights": {
+    "common_strengths": ["Atomic structure", "Nomenclature"],
+    "common_weaknesses": ["Electrolysis mechanisms", "Rate of reaction"],
+    "simple_feedback": "Ahmed shows strong conceptual understanding but needs more practice on electrolysis and kinetics."
+  },
+  "recommendations": [
+    "Review electrolysis discharge potential rules",
+    "Practice more past papers on kinetics",
+    "Focus on organic reaction mechanisms"
+  ],
+  "recent_tests": [
+    { "date": "2024-03-10", "subject": "Chemistry", "score": 72 },
+    { "date": "2024-03-05", "subject": "Chemistry", "score": 68 },
+    { "date": "2024-02-28", "subject": "Chemistry", "score": 75 }
+  ]
+}

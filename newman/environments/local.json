@@ -1,0 +1,16 @@
+{
+  "id": "zoomiez-local-env",
+  "name": "Zoomiez Local",
+  "values": [
+    { "key": "base_url", "value": "http://localhost:5000", "enabled": true },
+    { "key": "jwt_token_student", "value": "PASTE_STUDENT_JWT_HERE", "enabled": true },
+    { "key": "jwt_token_teacher", "value": "PASTE_TEACHER_JWT_HERE", "enabled": true },
+    { "key": "jwt_token_institution", "value": "PASTE_INSTITUTION_JWT_HERE", "enabled": true },
+    { "key": "student_email", "value": "self-student@example.com", "enabled": true },
+    { "key": "enrolled_email", "value": "enrolled-student@example.com", "enabled": true },
+    { "key": "teacher_email", "value": "teacher@example.com", "enabled": true },
+    { "key": "institution_email", "value": "institution@example.com", "enabled": true },
+    { "key": "test_quiz_id", "value": "", "enabled": true },
+    { "key": "test_submission_id", "value": "", "enabled": true }
+  ]
+}

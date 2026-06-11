@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zoomiez — Test Reports Hub</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface2: #263548;
+      --border: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #6366f1;
+      --accent2: #8b5cf6;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --teal: #14b8a6;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 60px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #0f1e36 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .logo-box {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 900; color: white;
+      flex-shrink: 0;
+    }
+    header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+    header p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .badge {
+      display: inline-block; padding: 2px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+      background: rgba(99,102,241,0.2); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3);
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px 0; }
+    .section-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--muted); margin-bottom: 16px;
+    }
+
+    /* ── Grid ── */
+    .grid { display: grid; gap: 16px; margin-bottom: 40px; }
+    .grid-3 { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+    .grid-5 { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+    .card-icon {
+      width: 38px; height: 38px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-bottom: 12px;
+    }
+    .card-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .card-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .card-meta { font-size: 11px; color: var(--muted); margin-top: 10px; }
+    .card-meta strong { color: var(--text); }
+
+    .icon-playwright { background: rgba(45,212,191,0.15); }
+    .icon-cypress    { background: rgba(34,197,94,0.15); }
+    .icon-k6         { background: rgba(251,191,36,0.15); }
+    .icon-newman     { background: rgba(59,130,246,0.15); }
+    .icon-pytest     { background: rgba(139,92,246,0.15); }
+
+    /* ── Stat bar ── */
+    .stats {
+      display: flex; gap: 24px; flex-wrap: wrap;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 28px; margin-bottom: 40px;
+    }
+    .stat { display: flex; flex-direction: column; gap: 2px; }
+    .stat-value { font-size: 26px; font-weight: 700; line-height: 1; }
+    .stat-label { font-size: 11px; color: var(--muted); }
+    .stat-green { color: var(--green); }
+    .stat-blue  { color: var(--blue); }
+    .stat-teal  { color: var(--teal); }
+    .stat-acc   { color: var(--accent); }
+    .stat-y     { color: var(--yellow); }
+
+    /* ── Quick commands ── */
+    .cmds { margin-bottom: 40px; }
+    .cmd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+    .cmd-block {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 16px;
+    }
+    .cmd-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .cmd-code {
+      font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 12px; color: #a5b4fc; line-height: 1.6;
+    }
+
+    /* ── Sensitive routes table ── */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { text-align: left; padding: 10px 14px; color: var(--muted); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 14px; border-bottom: 1px solid rgba(51,65,85,0.5); }
+    tr:last-child td { border-bottom: none; }
+    .pill {
+      display: inline-block; padding: 1px 8px; border-radius: 20px;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .pill-red    { background: rgba(239,68,68,0.15);   color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+    .pill-yellow { background: rgba(234,179,8,0.15);   color: #fde047; border: 1px solid rgba(234,179,8,0.3); }
+    .pill-blue   { background: rgba(59,130,246,0.15);  color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+    .pill-green  { background: rgba(34,197,94,0.15);   color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
+
+    /* ── CI badges ── */
+    .ci-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+    .ci-badge {
+      padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600;
+      background: var(--surface); border: 1px solid var(--border); color: var(--muted);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 24px;
+      font-size: 12px; color: var(--muted);
+      border-top: 1px solid var(--border); margin-top: 20px;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-box">Z</div>
+  <div>
+    <h1>Zoomiez — Test Reports Hub &nbsp;<span class="badge">LIVE</span></h1>
+    <p>Playwright E2E &nbsp;·&nbsp; Cypress E2E &nbsp;·&nbsp; k6 Load &nbsp;·&nbsp; Newman Contract &nbsp;·&nbsp; pytest Backend</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ── Stats ── -->
+  <div class="stats">
+    <div class="stat"><span class="stat-value stat-green">127</span><span class="stat-label">E2E Use Cases</span></div>
+    <div class="stat"><span class="stat-value stat-blue">40+</span><span class="stat-label">Backend Tests</span></div>
+    <div class="stat"><span class="stat-value stat-teal">5</span><span class="stat-label">k6 SLO Checks</span></div>
+    <div class="stat"><span class="stat-value stat-acc">4</span><span class="stat-label">User Roles</span></div>
+    <div class="stat"><span class="stat-value stat-y">15+</span><span class="stat-label">Stubbed Routes</span></div>
+  </div>
+
+  <!-- ── Test suite cards ── -->
+  <p class="section-title">Test Suites</p>
+  <div class="grid grid-3">
+
+    <a class="card" href="./allure/index.html">
+      <div class="card-icon icon-playwright">🎭</div>
+      <div class="card-title">Playwright E2E</div>
+      <div class="card-desc">Full user-flow tests across all 4 roles (self-student, enrolled-student, teacher, institution). JWT mint trick for instant auth — no real login calls.</div>
+      <div class="card-meta"><strong>127</strong> test cases &nbsp;·&nbsp; <strong>5</strong> browser projects &nbsp;·&nbsp; allure-playwright</div>
+    </a>
+
+    <a class="card" href="./allure/index.html">
+      <div class="card-icon icon-cypress">🌲</div>
+      <div class="card-title">Cypress E2E</div>
+      <div class="card-desc">Component-level and critical-path tests. cy.loginAs() command handles JWT injection. cy.stubSensitiveApis() intercepts all 15+ paid-API routes.</div>
+      <div class="card-meta"><strong>4</strong> suites &nbsp;·&nbsp; Video recording &nbsp;·&nbsp; allure-cypress</div>
+    </a>
+
+    <a class="card" href="./allure/index.html">
+      <div class="card-icon icon-k6">⚡</div>
+      <div class="card-title">k6 Load Tests</div>
+      <div class="card-desc">VU-based load tests for hot endpoints: login, random papers, dashboard analytics. Enforces p95 SLO thresholds. Runs nightly at 2am UTC.</div>
+      <div class="card-meta">login p95 &lt;500ms &nbsp;·&nbsp; papers p95 &lt;800ms</div>
+    </a>
+
+    <a class="card" href="./allure/index.html">
+      <div class="card-icon icon-newman">📬</div>
+      <div class="card-title">Newman Contract Tests</div>
+      <div class="card-desc">Full Postman collection run via Newman CLI. Verifies all API contracts: status codes, response shapes, auth headers, error messages.</div>
+      <div class="card-meta">Runs after backend-tests job &nbsp;·&nbsp; allure-newman</div>
+    </a>
+
+    <a class="card" href="./allure/index.html">
+      <div class="card-icon icon-pytest">🐍</div>
+      <div class="card-title">pytest Backend</div>
+      <div class="card-desc">Flask integration tests against a real MongoDB. TEST_PREFIX auto-cleanup — no manual teardown. All OpenAI/Resend/R2/Mistral calls mocked.</div>
+      <div class="card-meta"><strong>40+</strong> tests &nbsp;·&nbsp; 4 modules &nbsp;·&nbsp; self-cleaning</div>
+    </a>
+
+    <a class="card" href="./allure/index.html">
+      <div class="card-icon" style="background:rgba(99,102,241,0.15);">📊</div>
+      <div class="card-title">Allure Report</div>
+      <div class="card-desc">Unified report from all test frameworks — Playwright + pytest + Newman. Published to GitHub Pages after every CI run.</div>
+      <div class="card-meta">GitHub Pages &nbsp;·&nbsp; Auto-published on push</div>
+    </a>
+
+  </div>
+
+  <!-- ── Quick Commands ── -->
+  <p class="section-title">Quick Commands</p>
+  <div class="cmds">
+    <div class="cmd-grid">
+      <div class="cmd-block">
+        <div class="cmd-label">Playwright (auto-starts frontend)</div>
+        <div class="cmd-code">cd Zoomiez-test-Documentation<br>npm run test:playwright</div>
+      </div>
+      <div class="cmd-block">
+        <div class="cmd-label">Cypress run</div>
+        <div class="cmd-code">cd Zoomiez-test-Documentation<br>npm run test:cypress:run</div>
+      </div>
+      <div class="cmd-block">
+        <div class="cmd-label">Backend pytest</div>
+        <div class="cmd-code">cd Zoomiez-test-Documentation/backend-tests<br>pytest . -v</div>
+      </div>
+      <div class="cmd-block">
+        <div class="cmd-label">Newman contract tests</div>
+        <div class="cmd-code">cd Zoomiez-test-Documentation<br>npm run test:newman</div>
+      </div>
+      <div class="cmd-block">
+        <div class="cmd-label">k6 load — login endpoint</div>
+        <div class="cmd-code">k6 run k6/scenarios/login-load.js</div>
+      </div>
+      <div class="cmd-block">
+        <div class="cmd-label">Generate + open Allure report</div>
+        <div class="cmd-code">npm run test:allure<br>npm run test:allure:open</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Sensitive routes stub table ── -->
+  <p class="section-title">Sensitive Routes — Stub Policy</p>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:40px;">
+    <table>
+      <thead>
+        <tr>
+          <th>API</th>
+          <th>What it does</th>
+          <th>Frontend stub</th>
+          <th>Backend stub</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>OpenAI</strong></td>
+          <td>SQ evaluation, teacher OCR grading, insight enrichment</td>
+          <td><span class="pill pill-blue">page.route()</span> <span class="pill pill-blue">cy.intercept()</span></td>
+          <td><span class="pill pill-yellow">pytest-mock</span></td>
+        </tr>
+        <tr>
+          <td><strong>Mistral</strong></td>
+          <td>OCR on uploaded handwritten answer images</td>
+          <td><span class="pill pill-blue">page.route()</span></td>
+          <td><span class="pill pill-yellow">pytest-mock</span></td>
+        </tr>
+        <tr>
+          <td><strong>Resend</strong></td>
+          <td>OTP emails, teacher invites, institution report emails</td>
+          <td><span class="pill pill-blue">cy.intercept()</span></td>
+          <td><span class="pill pill-green">responses lib</span></td>
+        </tr>
+        <tr>
+          <td><strong>Cloudflare R2</strong></td>
+          <td>Note upload/download, institution logo storage</td>
+          <td><span class="pill pill-blue">page.route()</span></td>
+          <td><span class="pill pill-green">moto (S3 mock)</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── CI Workflows ── -->
+  <p class="section-title">CI Workflows</p>
+  <div class="grid grid-3" style="margin-bottom:40px;">
+    <div class="card" style="cursor:default;">
+      <div class="card-title">🔄 playwright.yml</div>
+      <div class="card-desc">Runs all Playwright E2E on push/PR to main. Starts MongoDB + backend + frontend as services. Uploads Allure results artifact.</div>
+      <div class="card-meta">Trigger: push / PR to main</div>
+    </div>
+    <div class="card" style="cursor:default;">
+      <div class="card-title">🐍 backend-tests.yml</div>
+      <div class="card-desc">Runs pytest (40+ tests) then Newman contract tests in sequence. Uses test MongoDB. Mocks all paid APIs.</div>
+      <div class="card-meta">Trigger: push / PR to main</div>
+    </div>
+    <div class="card" style="cursor:default;">
+      <div class="card-title">⚡ k6.yml</div>
+      <div class="card-desc">Nightly load tests at 2am UTC. Enforces p95 SLO thresholds. Also triggerable manually with custom VUs + duration.</div>
+      <div class="card-meta">Trigger: cron 0 2 * * * + manual</div>
+    </div>
+    <div class="card" style="cursor:default;">
+      <div class="card-title">📊 allure-pages.yml</div>
+      <div class="card-desc">Downloads all Allure artifacts from test workflows, generates unified Allure report, publishes to GitHub Pages.</div>
+      <div class="card-meta">Trigger: after test workflows complete</div>
+    </div>
+    <div class="card" style="cursor:default;">
+      <div class="card-title">✅ TypeScript Check</div>
+      <div class="card-desc">Runs tsc --noEmit on the Frontend project to catch type errors before any E2E tests run.</div>
+      <div class="card-meta">Part of allure-pages.yml</div>
+    </div>
+  </div>
+
+  <!-- ── Auth strategy ── -->
+  <p class="section-title">Auth Strategy</p>
+  <div class="grid" style="grid-template-columns:1fr 1fr;margin-bottom:40px;">
+    <div class="card" style="cursor:default;">
+      <div class="card-title">JWT Mint Trick (default)</div>
+      <div class="card-desc">Tests sign JWTs with <code style="color:#a5b4fc">JWT_SECRET_KEY</code> directly using HS256. Token injected into Redux localStorage (<code style="color:#a5b4fc">app_state</code>). No real login calls, no Resend OTP emails triggered. Auth setup runs once per role, saves storageState files to <code style="color:#a5b4fc">.auth/</code>.</div>
+    </div>
+    <div class="card" style="cursor:default;">
+      <div class="card-title">Real Login (REAL_LOGIN=true)</div>
+      <div class="card-desc">Set <code style="color:#a5b4fc">REAL_LOGIN=true</code> in <code style="color:#a5b4fc">.env</code> and fill real credentials in <code style="color:#a5b4fc">fixtures/users.json</code>. Auth setup uses the actual login UI. Requires test accounts to exist in the database. Useful for smoke-testing auth flows end-to-end.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Zoomiez Test Documentation &nbsp;·&nbsp; Auto-published via GitHub Actions &nbsp;·&nbsp;
+  <a href="./allure/index.html">View Allure Report</a>
+</footer>
+
+</body>
+</html>

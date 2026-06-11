@@ -1,0 +1,15 @@
+.env
+fixtures/users.json
+node_modules/
+allure-results/
+allure-report/
+docs/allure/
+playwright-report/
+test-results/
+.auth/
+cypress/videos/
+cypress/screenshots/
+__pycache__/
+.pytest_cache/
+*.pyc
+backend-tests/.env
