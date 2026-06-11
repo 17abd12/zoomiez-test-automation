@@ -104,8 +104,8 @@ def mock_openai(mocker):
     mock_client.chat.completions.create.return_value = mock_response
 
     # Patch everywhere OpenAI is instantiated
-    mocker.patch("app.services.sq_evaluation_service._client", mock_client)
-    mocker.patch("app.services.teacher_evaluation_service._client", mock_client)
+    mocker.patch("app.services.sq_evaluation_service.client", mock_client)
+    mocker.patch("app.services.teacher_evaluation_service.client", mock_client)
     mocker.patch("app.services.eval_grading_service._client", mock_client)
     return mock_client
 
@@ -119,7 +119,7 @@ def mock_mistral(mocker):
     mock_response.pages[0].markdown = "Q1a) Cathode: Hydrogen. Anode: Chlorine.\nQ1b) Cl- is more concentrated."
 
     mock_client.ocr.process.return_value = mock_response
-    mocker.patch("app.services.teacher_evaluation_service._mistral_client", mock_client)
+    mocker.patch("app.services.teacher_evaluation_service.mistral_client", mock_client)
     return mock_client
 
 

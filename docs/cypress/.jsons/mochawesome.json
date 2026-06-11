@@ -5,9 +5,9 @@
     "passes": 5,
     "pending": 0,
     "failures": 2,
-    "start": "2026-06-11T10:34:37.022Z",
-    "end": "2026-06-11T10:35:07.004Z",
-    "duration": 29982,
+    "start": "2026-06-11T11:41:37.792Z",
+    "end": "2026-06-11T11:42:12.462Z",
+    "duration": 34670,
     "testsRegistered": 7,
     "passPercent": 71.42857142857143,
     "pendingPercent": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "a4c8dbd7-b8c7-481a-8d34-ea0ab55da1fa",
+      "uuid": "e709eb31-4780-4bdc-bb7e-3796f7d405e2",
       "title": "",
       "fullFile": "cypress\\e2e\\auth\\login.cy.ts",
       "file": "cypress\\e2e\\auth\\login.cy.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "878f08d0-8399-4d73-9299-42a952c12ea4",
+          "uuid": "19c0a6a0-59d1-491f-9eb2-219f0b846d99",
           "title": "UC-AUTH-03: Login",
           "fullFile": "",
           "file": "",
@@ -38,7 +38,7 @@
               "title": "student login happy path redirects to /student/dashboard",
               "fullTitle": "UC-AUTH-03: Login student login happy path redirects to /student/dashboard",
               "timedOut": null,
-              "duration": 4740,
+              "duration": 4842,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -47,8 +47,8 @@
               "context": "{\n  \"title\": \"cypress-mochawesome-reporter-videos-passed\",\n  \"value\": \"cypress\\\\e2e\\\\auth\\\\login.cy.ts\"\n}",
               "code": "cy.intercept('POST', `${api}/auth/login`, {\n    body: { token: 'mock-jwt', user: { email: 'student@example.com', role: 'student', student_type: 'self_enrolled', onboarding_completed: true } },\n});\ncy.visit('/login/student');\ncy.get('input[type=\"email\"]').type('student@example.com');\ncy.get('input[type=\"password\"]').type('Pass123');\ncy.get('button[type=\"submit\"]').click();\ncy.url({ timeout: 10000 }).should('include', '/student/dashboard');",
               "err": {},
-              "uuid": "6356af47-837f-4141-bea5-a7c64ea0c691",
-              "parentUUID": "878f08d0-8399-4d73-9299-42a952c12ea4",
+              "uuid": "b88c08f0-aa88-45e1-96ff-d3b2ab50040b",
+              "parentUUID": "19c0a6a0-59d1-491f-9eb2-219f0b846d99",
               "isHook": false,
               "skipped": false
             },
@@ -56,7 +56,7 @@
               "title": "wrong password shows error message",
               "fullTitle": "UC-AUTH-03: Login wrong password shows error message",
               "timedOut": null,
-              "duration": 7541,
+              "duration": 7725,
               "state": "failed",
               "speed": null,
               "pass": false,
@@ -69,8 +69,8 @@
                 "estack": "AssertionError: Timed out retrying after 5000ms: Expected to find content: '/invalid credentials/i' but never did.\n    at Context.eval (webpack://zoomiez-test-documentation/./cypress/e2e/auth/login.cy.ts:24:61)",
                 "diff": null
               },
-              "uuid": "2ec79549-6c88-4118-a3a6-cf0a98a2a2fd",
-              "parentUUID": "878f08d0-8399-4d73-9299-42a952c12ea4",
+              "uuid": "57002c23-704e-401d-85b9-02435aa4de2d",
+              "parentUUID": "19c0a6a0-59d1-491f-9eb2-219f0b846d99",
               "isHook": false,
               "skipped": false
             },
@@ -78,7 +78,7 @@
               "title": "unverified user redirected to verify-email",
               "fullTitle": "UC-AUTH-03: Login unverified user redirected to verify-email",
               "timedOut": null,
-              "duration": 10355,
+              "duration": 11131,
               "state": "failed",
               "speed": null,
               "pass": false,
@@ -91,8 +91,8 @@
                 "estack": "AssertionError: Timed out retrying after 8000ms: expected 'http://localhost:8080/login/student' to include '/verify-email'\n    at Context.eval (webpack://zoomiez-test-documentation/./cypress/e2e/auth/login.cy.ts:32:32)",
                 "diff": null
               },
-              "uuid": "7458d3e7-e6a1-4e86-9b09-ce6c908771bf",
-              "parentUUID": "878f08d0-8399-4d73-9299-42a952c12ea4",
+              "uuid": "e66369f0-b5f2-48d5-a96c-15187858693a",
+              "parentUUID": "19c0a6a0-59d1-491f-9eb2-219f0b846d99",
               "isHook": false,
               "skipped": false
             },
@@ -100,7 +100,7 @@
               "title": "institution login stores org_name in localStorage",
               "fullTitle": "UC-AUTH-03: Login institution login stores org_name in localStorage",
               "timedOut": null,
-              "duration": 2447,
+              "duration": 3133,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -109,30 +109,30 @@
               "context": "{\n  \"title\": \"cypress-mochawesome-reporter-videos-passed\",\n  \"value\": \"cypress\\\\e2e\\\\auth\\\\login.cy.ts\"\n}",
               "code": "cy.intercept('POST', `${api}/auth/login`, {\n    body: { token: 'mock-jwt', user: { email: 'inst@example.com', role: 'institution', institution_name: 'Test Academy', onboarding_completed: true } },\n});\ncy.visit('/login/institution');\ncy.get('input[type=\"email\"]').type('inst@example.com');\ncy.get('input[type=\"password\"]').type('Pass123');\ncy.get('button[type=\"submit\"]').click();\ncy.url({ timeout: 10000 }).should('include', '/institution');\ncy.window().its('localStorage').invoke('getItem', 'org_name').should('eq', 'Test Academy');",
               "err": {},
-              "uuid": "2611169d-1635-4401-b373-727c27e82430",
-              "parentUUID": "878f08d0-8399-4d73-9299-42a952c12ea4",
+              "uuid": "a1d22dad-cafc-4f2c-a791-d9908fe8692b",
+              "parentUUID": "19c0a6a0-59d1-491f-9eb2-219f0b846d99",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "6356af47-837f-4141-bea5-a7c64ea0c691",
-            "2611169d-1635-4401-b373-727c27e82430"
+            "b88c08f0-aa88-45e1-96ff-d3b2ab50040b",
+            "a1d22dad-cafc-4f2c-a791-d9908fe8692b"
           ],
           "failures": [
-            "2ec79549-6c88-4118-a3a6-cf0a98a2a2fd",
-            "7458d3e7-e6a1-4e86-9b09-ce6c908771bf"
+            "57002c23-704e-401d-85b9-02435aa4de2d",
+            "e66369f0-b5f2-48d5-a96c-15187858693a"
           ],
           "pending": [],
           "skipped": [],
-          "duration": 25083,
+          "duration": 26831,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
         },
         {
-          "uuid": "7755bd73-6c5d-4017-897b-46846dc18102",
+          "uuid": "41291759-869d-42ff-a661-9a75b0f494d7",
           "title": "UC-CROSS-02: Protected Route Redirects",
           "fullFile": "",
           "file": "",
@@ -143,7 +143,7 @@
               "title": "unauthenticated /student/dashboard redirects to login",
               "fullTitle": "UC-CROSS-02: Protected Route Redirects unauthenticated /student/dashboard redirects to login",
               "timedOut": null,
-              "duration": 1168,
+              "duration": 1737,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -152,8 +152,8 @@
               "context": "{\n  \"title\": \"cypress-mochawesome-reporter-videos-passed\",\n  \"value\": \"cypress\\\\e2e\\\\auth\\\\login.cy.ts\"\n}",
               "code": "cy.clearLocalStorage();\ncy.visit('/student/dashboard');\ncy.url({ timeout: 8000 }).should('include', '/login');",
               "err": {},
-              "uuid": "aaa7af75-6e5b-4980-bfb8-fd5fe2f11607",
-              "parentUUID": "7755bd73-6c5d-4017-897b-46846dc18102",
+              "uuid": "f57f9ec5-8b94-43d3-9321-cad8e88f3912",
+              "parentUUID": "41291759-869d-42ff-a661-9a75b0f494d7",
               "isHook": false,
               "skipped": false
             },
@@ -161,7 +161,7 @@
               "title": "unauthenticated /teacher redirects to login",
               "fullTitle": "UC-CROSS-02: Protected Route Redirects unauthenticated /teacher redirects to login",
               "timedOut": null,
-              "duration": 1056,
+              "duration": 1680,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -170,8 +170,8 @@
               "context": "{\n  \"title\": \"cypress-mochawesome-reporter-videos-passed\",\n  \"value\": \"cypress\\\\e2e\\\\auth\\\\login.cy.ts\"\n}",
               "code": "cy.clearLocalStorage();\ncy.visit('/teacher');\ncy.url({ timeout: 8000 }).should('include', '/login');",
               "err": {},
-              "uuid": "691085ae-c981-4c5a-b1ed-a612036d6ef5",
-              "parentUUID": "7755bd73-6c5d-4017-897b-46846dc18102",
+              "uuid": "9e34110b-34c0-4b40-8d9c-2957fee67ce4",
+              "parentUUID": "41291759-869d-42ff-a661-9a75b0f494d7",
               "isHook": false,
               "skipped": false
             },
@@ -179,7 +179,7 @@
               "title": "unauthenticated /institution/dashboard redirects to login",
               "fullTitle": "UC-CROSS-02: Protected Route Redirects unauthenticated /institution/dashboard redirects to login",
               "timedOut": null,
-              "duration": 1132,
+              "duration": 1790,
               "state": "passed",
               "speed": "fast",
               "pass": true,
@@ -188,22 +188,22 @@
               "context": "{\n  \"title\": \"cypress-mochawesome-reporter-videos-passed\",\n  \"value\": \"cypress\\\\e2e\\\\auth\\\\login.cy.ts\"\n}",
               "code": "cy.clearLocalStorage();\ncy.visit('/institution/dashboard');\ncy.url({ timeout: 8000 }).should('include', '/login');",
               "err": {},
-              "uuid": "031f1654-2dab-4575-9bf4-b6affdd62a0a",
-              "parentUUID": "7755bd73-6c5d-4017-897b-46846dc18102",
+              "uuid": "9d95164c-cfa5-4217-af88-cf41b2e9209f",
+              "parentUUID": "41291759-869d-42ff-a661-9a75b0f494d7",
               "isHook": false,
               "skipped": false
             }
           ],
           "suites": [],
           "passes": [
-            "aaa7af75-6e5b-4980-bfb8-fd5fe2f11607",
-            "691085ae-c981-4c5a-b1ed-a612036d6ef5",
-            "031f1654-2dab-4575-9bf4-b6affdd62a0a"
+            "f57f9ec5-8b94-43d3-9321-cad8e88f3912",
+            "9e34110b-34c0-4b40-8d9c-2957fee67ce4",
+            "9d95164c-cfa5-4217-af88-cf41b2e9209f"
           ],
           "failures": [],
           "pending": [],
           "skipped": [],
-          "duration": 3356,
+          "duration": 5207,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000

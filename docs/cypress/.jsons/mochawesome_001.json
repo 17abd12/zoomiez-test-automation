@@ -5,9 +5,9 @@
     "passes": 0,
     "pending": 0,
     "failures": 2,
-    "start": "2026-06-11T10:35:10.853Z",
-    "end": "2026-06-11T10:35:16.258Z",
-    "duration": 5405,
+    "start": "2026-06-11T11:42:16.723Z",
+    "end": "2026-06-11T11:42:24.485Z",
+    "duration": 7762,
     "testsRegistered": 4,
     "passPercent": 0,
     "pendingPercent": 0,
@@ -18,7 +18,7 @@
   },
   "results": [
     {
-      "uuid": "a6496dc2-9d82-4ca3-a358-d3a893bbe508",
+      "uuid": "14cc49f2-5223-483e-89bb-5d654be79d18",
       "title": "",
       "fullFile": "cypress\\e2e\\teacher\\evaluation.cy.ts",
       "file": "cypress\\e2e\\teacher\\evaluation.cy.ts",
@@ -27,7 +27,7 @@
       "tests": [],
       "suites": [
         {
-          "uuid": "e4f50e50-3323-4efb-bfa5-3d39febf3976",
+          "uuid": "86a85a49-bd7c-4056-8a2b-2dfb12c476da",
           "title": "UC-TC-05: Teacher Evaluation",
           "fullFile": "",
           "file": "",
@@ -38,7 +38,7 @@
               "title": "evaluation page loads and shows student/quiz selects",
               "fullTitle": "UC-TC-05: Teacher Evaluation evaluation page loads and shows student/quiz selects",
               "timedOut": null,
-              "duration": 3341,
+              "duration": 4681,
               "state": "failed",
               "speed": null,
               "pass": false,
@@ -51,8 +51,8 @@
                 "estack": "TypeError: Right-hand side of 'instanceof' is not an object\n\nThis error occurred while creating the session. Because the session setup failed, we failed the test.\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `UC-TC-05: Teacher Evaluation`\n    at module.exports (webpack://zoomiez-test-documentation/./node_modules/jsonwebtoken/sign.js:114:0)\n    at Context.eval (webpack://zoomiez-test-documentation/./cypress/support/commands.ts:55:0)",
                 "diff": null
               },
-              "uuid": "53082fe8-e15b-4506-baf2-88cc3279e99c",
-              "parentUUID": "e4f50e50-3323-4efb-bfa5-3d39febf3976",
+              "uuid": "1714f603-1938-46c8-af2c-906a7c13aad7",
+              "parentUUID": "86a85a49-bd7c-4056-8a2b-2dfb12c476da",
               "isHook": false,
               "skipped": false
             },
@@ -69,8 +69,8 @@
               "context": null,
               "code": "cy.visit('/teacher/evaluation');\ncy.get('select').first().select('student@example.com');\ncy.get('select').eq(1).select('quiz-001');\ncy.get('textarea').type('Q1a) Hydrogen and Chlorine. Q1b) Because Cl- is concentrated.');\ncy.get('button').contains(/run evaluation/i).click();\ncy.contains(/evaluation report/i, { timeout: 15000 }).should('be.visible');",
               "err": {},
-              "uuid": "8344bf10-c703-4479-bb9b-0cce326d6790",
-              "parentUUID": "e4f50e50-3323-4efb-bfa5-3d39febf3976",
+              "uuid": "0c673f23-bd23-4478-b728-0eeeb54c28c8",
+              "parentUUID": "86a85a49-bd7c-4056-8a2b-2dfb12c476da",
               "isHook": false,
               "skipped": true
             },
@@ -87,8 +87,8 @@
               "context": null,
               "code": "cy.visit('/teacher/evaluation');\ncy.get('button').contains(/run evaluation/i).click();\ncy.contains(/select student/i, { timeout: 5000 }).should('be.visible');",
               "err": {},
-              "uuid": "a0c68f2f-56a7-4a74-bf63-5390fabec06d",
-              "parentUUID": "e4f50e50-3323-4efb-bfa5-3d39febf3976",
+              "uuid": "a97e9dac-22d2-4f2d-ab2c-6b09df32e387",
+              "parentUUID": "86a85a49-bd7c-4056-8a2b-2dfb12c476da",
               "isHook": false,
               "skipped": true
             }
@@ -96,20 +96,20 @@
           "suites": [],
           "passes": [],
           "failures": [
-            "53082fe8-e15b-4506-baf2-88cc3279e99c"
+            "1714f603-1938-46c8-af2c-906a7c13aad7"
           ],
           "pending": [],
           "skipped": [
-            "8344bf10-c703-4479-bb9b-0cce326d6790",
-            "a0c68f2f-56a7-4a74-bf63-5390fabec06d"
+            "0c673f23-bd23-4478-b728-0eeeb54c28c8",
+            "a97e9dac-22d2-4f2d-ab2c-6b09df32e387"
           ],
-          "duration": 3341,
+          "duration": 4681,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000
         },
         {
-          "uuid": "f10fed68-2e98-4836-8bc5-1da3ef4c292c",
+          "uuid": "cff42482-77c4-48de-bfbc-c6b67350985f",
           "title": "UC-TC-04: Quiz Print — Light Background",
           "fullFile": "",
           "file": "",
@@ -120,7 +120,7 @@
               "title": "quiz print page has light background masthead",
               "fullTitle": "UC-TC-04: Quiz Print — Light Background quiz print page has light background masthead",
               "timedOut": null,
-              "duration": 1762,
+              "duration": 2632,
               "state": "failed",
               "speed": null,
               "pass": false,
@@ -133,8 +133,8 @@
                 "estack": "TypeError: Right-hand side of 'instanceof' is not an object\n\nThis error occurred while creating the session. Because the session setup failed, we failed the test.\n\nBecause this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `UC-TC-04: Quiz Print — Ligh...`\n    at module.exports (webpack://zoomiez-test-documentation/./node_modules/jsonwebtoken/sign.js:114:0)\n    at Context.eval (webpack://zoomiez-test-documentation/./cypress/support/commands.ts:55:0)",
                 "diff": null
               },
-              "uuid": "21ceb2db-fa78-4886-9b8c-e528a0c591de",
-              "parentUUID": "f10fed68-2e98-4836-8bc5-1da3ef4c292c",
+              "uuid": "cfe044e4-3b9d-4178-931f-2a445f1711d2",
+              "parentUUID": "cff42482-77c4-48de-bfbc-c6b67350985f",
               "isHook": false,
               "skipped": false
             }
@@ -142,11 +142,11 @@
           "suites": [],
           "passes": [],
           "failures": [
-            "21ceb2db-fa78-4886-9b8c-e528a0c591de"
+            "cfe044e4-3b9d-4178-931f-2a445f1711d2"
           ],
           "pending": [],
           "skipped": [],
-          "duration": 1762,
+          "duration": 2632,
           "root": false,
           "rootEmpty": false,
           "_timeout": 2000

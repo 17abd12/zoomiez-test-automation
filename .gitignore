@@ -3,7 +3,6 @@ fixtures/users.json
 node_modules/
 allure-results/
 allure-report/
-docs/allure/
 playwright-report/
 test-results/
 .auth/

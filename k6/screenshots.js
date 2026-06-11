@@ -38,8 +38,10 @@ export default async function () {
   try {
     // ── Public pages (no auth needed) ─────────────────────────────────────
     await snap(page, BASE_URL, '01-landing.png');
-    await snap(page, `${BASE_URL}/auth/login`, '02-login.png');
-    await snap(page, `${BASE_URL}/auth/signup`, '03-signup.png');
+    await snap(page, `${BASE_URL}/login/student`, '02-login-student.png');
+    await snap(page, `${BASE_URL}/login/teacher`, '03-login-teacher.png');
+    await snap(page, `${BASE_URL}/signup-student`, '04-signup-student.png');
+    await snap(page, `${BASE_URL}/signup-teacher`, '05-signup-teacher.png');
 
     // ── Authenticated pages (student self-enrolled) ───────────────────────
     // Inject JWT into localStorage so ProtectedRoute lets us in.
@@ -74,9 +76,9 @@ export default async function () {
           },
         });
 
-        await snap(page, `${BASE_URL}/student/dashboard`, '04-student-dashboard.png');
-        await snap(page, `${BASE_URL}/student/past-papers`, '05-past-papers.png');
-        await snap(page, `${BASE_URL}/student/topical`, '06-topical-papers.png');
+        await snap(page, `${BASE_URL}/student/dashboard`, '06-student-dashboard.png');
+        await snap(page, `${BASE_URL}/student/past-papers`, '07-past-papers.png');
+        await snap(page, `${BASE_URL}/student/topical`, '08-topical-papers.png');
       }
     }
   } finally {
