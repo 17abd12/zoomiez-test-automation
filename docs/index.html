@@ -183,42 +183,42 @@
   <p class="section-title">Test Suites</p>
   <div class="grid grid-3">
 
-    <a class="card" href="./allure/index.html">
+    <a class="card" href="./reports/allure/index.html">
       <div class="card-icon icon-playwright">🎭</div>
       <div class="card-title">Playwright E2E</div>
       <div class="card-desc">Full user-flow tests across all 4 roles (self-student, enrolled-student, teacher, institution). JWT mint trick for instant auth — no real login calls.</div>
       <div class="card-meta"><strong>127</strong> test cases &nbsp;·&nbsp; <strong>5</strong> browser projects &nbsp;·&nbsp; allure-playwright</div>
     </a>
 
-    <a class="card" href="./allure/index.html">
+    <a class="card" href="./reports/allure/index.html">
       <div class="card-icon icon-cypress">🌲</div>
       <div class="card-title">Cypress E2E</div>
       <div class="card-desc">Component-level and critical-path tests. cy.loginAs() command handles JWT injection. cy.stubSensitiveApis() intercepts all 15+ paid-API routes.</div>
       <div class="card-meta"><strong>4</strong> suites &nbsp;·&nbsp; Video recording &nbsp;·&nbsp; allure-cypress</div>
     </a>
 
-    <a class="card" href="./allure/index.html">
+    <a class="card" href="./reports/allure/index.html">
       <div class="card-icon icon-k6">⚡</div>
       <div class="card-title">k6 Load Tests</div>
       <div class="card-desc">VU-based load tests for hot endpoints: login, random papers, dashboard analytics. Enforces p95 SLO thresholds. Runs nightly at 2am UTC.</div>
       <div class="card-meta">login p95 &lt;500ms &nbsp;·&nbsp; papers p95 &lt;800ms</div>
     </a>
 
-    <a class="card" href="./allure/index.html">
+    <a class="card" href="./reports/allure/index.html">
       <div class="card-icon icon-newman">📬</div>
       <div class="card-title">Newman Contract Tests</div>
       <div class="card-desc">Full Postman collection run via Newman CLI. Verifies all API contracts: status codes, response shapes, auth headers, error messages.</div>
       <div class="card-meta">Runs after backend-tests job &nbsp;·&nbsp; allure-newman</div>
     </a>
 
-    <a class="card" href="./allure/index.html">
+    <a class="card" href="./reports/allure/index.html">
       <div class="card-icon icon-pytest">🐍</div>
       <div class="card-title">pytest Backend</div>
       <div class="card-desc">Flask integration tests against a real MongoDB. TEST_PREFIX auto-cleanup — no manual teardown. All OpenAI/Resend/R2/Mistral calls mocked.</div>
       <div class="card-meta"><strong>40+</strong> tests &nbsp;·&nbsp; 4 modules &nbsp;·&nbsp; self-cleaning</div>
     </a>
 
-    <a class="card" href="./allure/index.html">
+    <a class="card" href="./reports/allure/index.html">
       <div class="card-icon" style="background:rgba(99,102,241,0.15);">📊</div>
       <div class="card-title">Allure Report</div>
       <div class="card-desc">Unified report from all test frameworks — Playwright + pytest + Newman. Published to GitHub Pages after every CI run.</div>
@@ -346,7 +346,7 @@
 
 <footer>
   Zoomiez Test Documentation &nbsp;·&nbsp; Auto-published via GitHub Actions &nbsp;·&nbsp;
-  <a href="./allure/index.html">View Allure Report</a>
+  <a href="./reports/allure/index.html">View Allure Report</a>
 </footer>
 
 </body>
