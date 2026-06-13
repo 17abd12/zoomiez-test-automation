@@ -1,7 +1,19 @@
 /// <reference types="cypress" />
-import * as jwt from 'jsonwebtoken';
 
 // ─── Custom Commands ────────────────────────────────────────────────────────
+
+/**
+ * Craft a structurally-valid JWT without Node.js crypto.
+ * Frontend only uses the token as a Bearer string — never validates signature.
+ * Backend calls are all stubbed, so signature doesn't matter.
+ */
+function makeTestToken(payload: object): string {
+  const enc = (obj: object) =>
+    btoa(JSON.stringify(obj)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+  const header = enc({ alg: 'HS256', typ: 'JWT' });
+  const body = enc(payload);
+  return `${header}.${body}.cypress-test-signature`;
+}
 
 /**
  * cy.loginAs(role) — injects JWT into Redux localStorage to bypass login UI.
@@ -16,16 +28,17 @@ Cypress.Commands.add('loginAs', (role: 'self_student' | 'enrolled_student' | 'te
       institution: { email: 'institution@example.com', role: 'institution', institution_name: 'Test Academy' },
     };
     const user = users[role];
-    const secret = Cypress.env('JWT_SECRET_KEY') || 'test-secret-key';
 
     cy.visit('/');
     cy.window().then((win) => {
-      const token = jwt.sign(
-        { sub: user.email, email: user.email, role: user.role, roles: [user.role], student_type: user.student_type, institution_name: user.institution_name, onboarding_completed: true, exp: Math.floor(Date.now() / 1000) + 7200 },
-        secret
-      );
+      const token = makeTestToken({
+        sub: user.email, email: user.email, role: user.role, roles: [user.role],
+        student_type: user.student_type, institution_name: user.institution_name,
+        onboarding_completed: true, exp: Math.floor(Date.now() / 1000) + 7200,
+      });
+      // roles array required — ProtectedRoute uses user.roles || [] for allowedRoles check
       win.localStorage.setItem('app_state', JSON.stringify({
-        auth: { isLoggedIn: true, token, user: { ...user, name: 'Test User', onboarding_completed: true } },
+        auth: { isLoggedIn: true, token, user: { ...user, roles: [user.role], name: 'Test User', onboarding_completed: true } },
       }));
     });
   });
@@ -38,9 +51,17 @@ Cypress.Commands.add('loginAs', (role: 'self_student' | 'enrolled_student' | 'te
 Cypress.Commands.add('stubSensitiveApis', () => {
   const api = Cypress.env('API_BASE_URL') || 'http://localhost:5000';
 
-  // SENSITIVE: OpenAI
-  cy.intercept('POST', `${api}/api/teacher/evaluations/submit`, { fixture: 'mock-data/evaluation-stub.json' });
-  cy.intercept('POST', `${api}/api/sq-evaluation/evaluate`, { fixture: 'mock-data/evaluation-stub.json' });
+  // SENSITIVE: OpenAI — inline body avoids fixturesFolder path resolution issues
+  const evalStub = {
+    submission_id: 'test-eval-001', quiz_title: 'Chemistry SQ Test 1', subject: 'Chemistry',
+    total_marks_obtained: 14, total_marks_available: 20, percentage: 70,
+    evaluations: [
+      { root_question_id: 'q1', question_number: 1, part_label: 'a', marks_awarded: 2, marks_total: 2, is_correct: true, feedback: 'Correct.' },
+      { root_question_id: 'q1', question_number: 1, part_label: 'b', marks_awarded: 2, marks_total: 4, is_correct: false, feedback: 'Partial.', mistake: 'Omitted discharge potential.', improve: 'Review section 4.' },
+    ],
+  };
+  cy.intercept('POST', `${api}/api/teacher/evaluations/submit`, { body: evalStub });
+  cy.intercept('POST', `${api}/api/sq-evaluation/evaluate`, { body: evalStub });
   cy.intercept('POST', `${api}/api/evaluations/*/enrich`, { body: { ai_enriched: true } });
 
   // SENSITIVE: Resend (all email sends)

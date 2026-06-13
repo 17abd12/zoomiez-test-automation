@@ -57,7 +57,7 @@ test.describe('UC-TC-05: Teacher Evaluation — stubbed', () => {
     // Select quiz
     await page.locator('select').nth(1).selectOption('quiz-001');
     // Paste extracted text
-    await page.getByPlaceholder(/extracted text|paste/i).fill('Q1a) Cathode: Hydrogen. Anode: Chlorine. Q1b) Because Cl- is more concentrated.');
+    await page.getByPlaceholder(/Question statement/i).fill('Q1a) Cathode: Hydrogen. Anode: Chlorine. Q1b) Because Cl- is more concentrated.');
     // Submit
     await page.getByRole('button', { name: /run evaluation/i }).click();
     // Report tab should appear
@@ -83,7 +83,7 @@ test.describe('UC-TC-05: Teacher Evaluation — stubbed', () => {
     await page.goto('/teacher/evaluation');
     await page.locator('select').first().selectOption('enrolled-student@example.com');
     await page.locator('select').nth(1).selectOption('quiz-001');
-    await page.getByPlaceholder(/extracted text|paste/i).fill('Some answer text.');
+    await page.getByPlaceholder(/Question statement/i).fill('Some answer text.');
     await page.getByRole('button', { name: /run evaluation/i }).click();
     await expect(page.getByText(/Evaluation Report/i)).toBeVisible({ timeout: 15_000 });
 
@@ -102,11 +102,15 @@ test.describe('UC-TC-05: Teacher Evaluation — stubbed', () => {
 
 test.describe('UC-TC-04: Quiz Management', () => {
   test.beforeEach(async ({ page }) => {
+    // getMyQuizzes checks data.success — mock must return { success: true, quizzes: [...] }
     await page.route(`${API}/api/teacher-quiz/my-quizzes`, (r) =>
       r.fulfill({
-        json: [
-          { _id: 'quiz-001', title: 'Chemistry MCQ 1', subject: 'Chemistry', class_level: 'O-Level', quiz_type: 'mcq', question_count: 20, status: 'active' },
-        ],
+        json: {
+          success: true,
+          quizzes: [
+            { _id: 'quiz-001', title: 'Chemistry MCQ 1', subject: 'Chemistry', class_level: 'O-Level', quiz_type: 'mcq', question_count: 20, status: 'active' },
+          ],
+        },
       })
     );
     await page.route(`${API}/api/teacher-quiz/subjects/*`, (r) =>
@@ -119,11 +123,15 @@ test.describe('UC-TC-04: Quiz Management', () => {
 
   test('quiz list renders', async ({ page }) => {
     await page.goto('/teacher/quizzes');
+    // Default tab is "create" — must click "My Quizzes" tab to trigger loadQuizzes()
+    await page.getByRole('tab', { name: /my quizzes/i }).click();
     await expect(page.getByText(/Chemistry MCQ 1/i)).toBeVisible({ timeout: 8_000 });
   });
 
   test('print quiz opens new tab with light background', async ({ page, context }) => {
     await page.goto('/teacher/quizzes');
+    // Default tab is "create" — must click "My Quizzes" tab to trigger loadQuizzes()
+    await page.getByRole('tab', { name: /my quizzes/i }).click();
     await expect(page.getByText(/Chemistry MCQ 1/i)).toBeVisible({ timeout: 8_000 });
     const printBtn = page.getByRole('button', { name: /print/i }).first();
     if (await printBtn.isVisible()) {

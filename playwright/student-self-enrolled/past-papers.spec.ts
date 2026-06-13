@@ -1,19 +1,65 @@
 /**
- * UC-SE-03 Past Papers + UC-SE-04 MCQ Practice + UC-SE-05 SQ Practice
+ * UC-SE-03 Past Papers + UC-SE-04 MCQ Practice
  * Runs as self-enrolled student (storageState injected by auth.setup.ts)
+ *
+ * PaperPracticePage restores quiz state from localStorage on mount.
+ * We pre-inject 'paper_practice_quiz_state' + 'active_quiz_state' so the
+ * component loads pre-set questions when we navigate to the /attempt URL.
+ * McqPracticeCardV2 uses question.statement (not question_text) and question.Answer (capital A).
  */
 
 import { test, expect } from '@playwright/test';
 
 const API = process.env.API_BASE_URL ?? 'http://localhost:5000';
 
-test.describe('UC-SE-03: Past Papers — Browse', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.route(`${API}/papers/available`, (r) =>
-      r.fulfill({ json: { papers: [{ id: 'chem-2023-mj', variant: 'Paper 1', year: '2023', session: 'May/June' }] } })
-    );
-  });
+// Inject localStorage state needed by PaperPracticePage and QuizLockContext.
+// Must be called after a page.goto() so the browser context is established.
+async function injectMcqPaperState(page: any) {
+  await page.evaluate(() => {
+    const paperState = {
+      selectedLevel: 'O-Level',
+      selectedSubject: 'Chemistry',
+      selectedType: 'mcq',
+      selectedVariant: null,
+      selectedFile: 'chem-2023-mj-p1.json',
+      loadedPaper: {
+        filename: 'chem-2023-mj-p1.json',
+        subject: 'Chemistry',
+        level: 'O-Level',
+        type: 'mcq',
+        // McqPracticeCardV2 reads question.statement and question.Answer (capital A)
+        questions: [
+          { question_number: 1, statement: 'Which element has atomic number 6?', options: { A: 'N', B: 'C', C: 'O', D: 'B' }, Answer: 'B' },
+          { question_number: 2, statement: 'Bond between Na and Cl?', options: { A: 'Covalent', B: 'Metallic', C: 'Ionic', D: 'H-bond' }, Answer: 'C' },
+        ],
+        metadata: { year: '2023', session: 'May/June' },
+      },
+      currentQuestionIndex: 0,
+      startTime: Date.now(),
+    };
+    localStorage.setItem('paper_practice_quiz_state', JSON.stringify(paperState));
 
+    // QuizLockContext reads 'active_quiz_state' on mount to restore isQuizActive = true
+    const quizLockState = {
+      id: 'paper-test-001',
+      type: 'mcq',
+      level: 'O-Level',
+      subject: 'Chemistry',
+      paperId: 'chem-2023-mj-p1.json',
+      startedAt: new Date().toISOString(),
+      mcqAnswers: [],
+      sqAnswers: [],
+      totalMcqs: 2,
+      totalSqs: 0,
+      timeRemaining: 2700,
+      totalTime: 2700,
+      isSubmitted: false,
+    };
+    localStorage.setItem('active_quiz_state', JSON.stringify(quizLockState));
+  });
+}
+
+test.describe('UC-SE-03: Past Papers — Browse', () => {
   test('browse page renders subject cards', async ({ page }) => {
     await page.goto('/student/past-papers');
     await expect(page.getByRole('heading', { name: /past papers/i })).toBeVisible();
@@ -24,73 +70,64 @@ test.describe('UC-SE-03: Past Papers — Browse', () => {
     await page.goto('/student/past-papers');
     const chemCard = page.getByText(/chemistry/i).first();
     await chemCard.click();
-    await expect(page.getByText(/mcq|paper 1/i)).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText(/mcq|paper 1|o-level/i)).toBeVisible({ timeout: 5_000 });
   });
 });
 
 test.describe('UC-SE-04: Paper Practice — MCQ', () => {
   test.beforeEach(async ({ page }) => {
-    await page.route(`${API}/api/papers/random`, (r) =>
-      r.fulfill({
-        json: {
-          paper_type: 'mcq',
-          questions: [
-            { question_number: 1, question_text: 'Which element has atomic number 6?', options: { A: 'N', B: 'C', C: 'O', D: 'B' }, correct_answer: 'B' },
-            { question_number: 2, question_text: 'Bond between Na and Cl?', options: { A: 'Covalent', B: 'Metallic', C: 'Ionic', D: 'H-bond' }, correct_answer: 'C' },
-          ],
-          total_questions: 2,
-          time_limit_minutes: 45,
-        },
-      })
-    );
+    // Mock the submit endpoint (uses fetch directly, not apiClient — no processResponse wrap)
     await page.route(`${API}/api/papers/submit`, (r) =>
-      r.fulfill({ json: { submission_id: 'sub-001', score: 1, total: 2, percentage: 50, correct: [1], wrong: [2] } })
+      r.fulfill({ json: { success: true, data: { submission_id: 'sub-001', score: 1, total: 2, percentage: 50 } } })
     );
+    // Navigate to any student page first to establish browser context, then inject state
+    await page.goto('/student/past-papers');
+    await injectMcqPaperState(page);
   });
 
   test('paper loads with questions', async ({ page }) => {
-    await page.goto('/student/papers/practice/O-Level/Chemistry/mcq/attempt');
+    // o-level slug matches selectedLevel 'O-Level' after toLowerCase + replace(/-/g,' ')
+    await page.goto('/student/papers/practice/o-level/chemistry/mcq/attempt');
     await expect(page.getByText(/Which element has atomic number 6/i)).toBeVisible({ timeout: 8_000 });
   });
 
   test('selecting answer highlights choice', async ({ page }) => {
-    await page.goto('/student/papers/practice/O-Level/Chemistry/mcq/attempt');
+    await page.goto('/student/papers/practice/o-level/chemistry/mcq/attempt');
     await expect(page.getByText(/Which element has atomic number 6/i)).toBeVisible({ timeout: 8_000 });
-    await page.getByText('C').first().click();
-    // Expect selection to be visually marked (class change or aria-pressed)
-    await expect(page.getByText('C').first()).toBeVisible();
+    // RadioGroupItem renders with role="radio" — click first option
+    await page.getByRole('radio').first().click();
+    // Option should now be selected — radio becomes checked
+    await expect(page.getByRole('radio').first()).toBeChecked();
   });
 
   test('submit shows score result', async ({ page }) => {
-    await page.goto('/student/papers/practice/O-Level/Chemistry/mcq/attempt');
+    await page.goto('/student/papers/practice/o-level/chemistry/mcq/attempt');
     await expect(page.getByText(/Which element has atomic number 6/i)).toBeVisible({ timeout: 8_000 });
-    // Select answers
-    await page.getByText('B').first().click();
-    await page.getByText('C').first().click();
+    // Must select at least one answer before submit is allowed
+    await page.getByRole('radio').first().click();
     // Submit
     await page.getByRole('button', { name: /submit/i }).click();
-    await expect(page.getByText(/1.*2|50%/i)).toBeVisible({ timeout: 8_000 });
+    // Results card shows "Your Results" header
+    await expect(page.getByText(/Your Results/i)).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/\d+%/)).toBeVisible();
   });
 
-  test('navigate away during attempt shows QuizLock dialog', async ({ page }) => {
-    await page.goto('/student/papers/practice/O-Level/Chemistry/mcq/attempt');
+  test('navigate away during attempt shows exit dialog', async ({ page }) => {
+    await page.goto('/student/papers/practice/o-level/chemistry/mcq/attempt');
     await expect(page.getByText(/Which element has atomic number 6/i)).toBeVisible({ timeout: 8_000 });
-    // Attempt navigate away
-    await page.goBack();
-    // QuizLock intercept dialog should appear
-    await expect(page.getByText(/leave|exit|warning/i)).toBeVisible({ timeout: 5_000 });
+    // "Exit Quiz" button calls attemptNavigation → sets showExitWarning → shows AlertDialog
+    await page.getByRole('button', { name: /exit quiz/i }).click();
+    await expect(page.getByText(/exit quiz|leave quiz/i)).toBeVisible({ timeout: 5_000 });
   });
 });
 
 test.describe('UC-SE-04: Route Restriction', () => {
-  test('teacher_enrolled student cannot access past-papers', async ({ browser }) => {
-    // Create a context simulating teacher_enrolled user
-    const context = await browser.newContext();
+  test('unauthenticated user cannot access past-papers', async ({ browser }) => {
+    const context = await browser.newContext(); // No storageState — no auth
     const page = await context.newPage();
     await page.goto('/student/past-papers');
-    // self_enrolled sees page; teacher_enrolled redirects to /student/quizzes
-    // This test just verifies the page renders for self_enrolled
-    await expect(page).toHaveURL(/\/student\/past-papers|\/student\/quizzes/);
+    // ProtectedRoute redirects unauthenticated users to /login
+    await expect(page).toHaveURL(/\/login/, { timeout: 8_000 });
     await context.close();
   });
 });

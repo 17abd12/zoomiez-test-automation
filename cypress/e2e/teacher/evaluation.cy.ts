@@ -47,19 +47,19 @@ describe('UC-TC-04: Quiz Print — Light Background', () => {
   });
 
   it('quiz print page has light background masthead', () => {
-    // Inject print payload
+    // QuizPrint reads from 'teacher_quiz_print_payload' (QuizManager QUIZ_PRINT_STORAGE_KEY)
+    // Payload must match QuizPrintPayload interface: title, subject, class_level, quiz_type, questions, question_count
     cy.window().then((win) => {
-      win.localStorage.setItem('quiz_print_payload', JSON.stringify({
-        quizTitle: 'Chemistry MCQ Test',
+      win.localStorage.setItem('teacher_quiz_print_payload', JSON.stringify({
+        title: 'Chemistry MCQ Test',
         subject: 'Chemistry',
-        level: 'O-Level',
-        quizType: 'MCQ',
-        date: '2024-03-15',
-        teacherName: 'Test Teacher',
+        class_level: 'O-Level',
+        quiz_type: 'mcq',
+        question_count: 1,
+        teacher_name: 'Test Teacher',
         questions: [
-          { question_number: 1, question_text: 'Q1 text?', options: { A: 'A', B: 'B', C: 'C', D: 'D' }, marks: 1 },
+          { question_number: 1, statement: 'Q1 text?', options: { A: 'A', B: 'B', C: 'C', D: 'D' }, Answer: 'A' },
         ],
-        totalMarks: 1,
       }));
     });
     cy.visit('/teacher/quizzes/print');

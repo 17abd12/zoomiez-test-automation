@@ -20,7 +20,8 @@ describe('UC-AUTH-03: Login', () => {
   });
 
   it('wrong password shows error message', () => {
-    cy.intercept('POST', `${api}/auth/login`, { statusCode: 401, body: { error: 'Invalid credentials' } });
+    // Backend (Flask) returns { msg: ... } — Login.tsx extracts err.response.data.msg
+    cy.intercept('POST', `${api}/auth/login`, { statusCode: 401, body: { msg: 'Invalid credentials' } });
     cy.visit('/login/student');
     cy.get('input[type="email"]').type('bad@example.com');
     cy.get('input[type="password"]').type('WrongPass');
@@ -29,7 +30,8 @@ describe('UC-AUTH-03: Login', () => {
   });
 
   it('unverified user redirected to verify-email', () => {
-    cy.intercept('POST', `${api}/auth/login`, { statusCode: 403, body: { error: 'Email not verified' } });
+    // Backend returns { msg: 'Email not verified' } — Login.tsx checks errorMsg.includes("email not verified")
+    cy.intercept('POST', `${api}/auth/login`, { statusCode: 403, body: { msg: 'Email not verified' } });
     cy.visit('/login/student');
     cy.get('input[type="email"]').type('unverified@example.com');
     cy.get('input[type="password"]').type('Pass123');

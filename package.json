@@ -13,7 +13,7 @@
     "test:k6:papers": "k6 run k6/scenarios/papers-load.js",
     "test:k6:dashboard": "k6 run k6/scenarios/dashboard-load.js",
     "test:k6:screenshots": "node -e \"require('fs').mkdirSync('docs/k6/screenshots', {recursive: true})\" && k6 run k6/screenshots.js",
-    "test:newman": "newman run newman/zoomiez-collection.json -e newman/environments/local.json --reporters cli,htmlextra --reporter-htmlextra-export docs/newman/index.html",
+    "test:newman": "node newman/mint-tokens.js && newman run newman/zoomiez-collection.json -e newman/environments/local.json --reporters cli,htmlextra --reporter-htmlextra-export docs/newman/index.html",
     "test:backend": "cd backend-tests && pytest . -v --html=../docs/pytest/index.html --self-contained-html",
     "test:allure": "allure generate allure-results -o docs/allure --clean",
     "test:allure:open": "allure open docs/allure",

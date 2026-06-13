@@ -54,8 +54,9 @@ test.describe('UC-AUTH-03: Login', () => {
   });
 
   test('wrong password shows error toast', async ({ page }) => {
+    // Backend (Flask) returns { msg: ... } — Login.tsx extracts err.response.data.msg
     await page.route(`${API}/auth/login`, (route) =>
-      route.fulfill({ status: 401, json: { error: 'Invalid credentials' } })
+      route.fulfill({ status: 401, json: { msg: 'Invalid credentials' } })
     );
     await page.goto(`${BASE}/login/student`);
     await page.getByLabel(/email/i).fill('self-student@example.com');
@@ -65,8 +66,9 @@ test.describe('UC-AUTH-03: Login', () => {
   });
 
   test('unverified email shows verify message', async ({ page }) => {
+    // Backend returns { msg: 'Email not verified' } — Login.tsx checks errorMsg.includes("email not verified")
     await page.route(`${API}/auth/login`, (route) =>
-      route.fulfill({ status: 403, json: { error: 'Email not verified' } })
+      route.fulfill({ status: 403, json: { msg: 'Email not verified' } })
     );
     await page.goto(`${BASE}/login/student`);
     await page.getByLabel(/email/i).fill('unverified@example.com');
@@ -104,8 +106,9 @@ test.describe('UC-AUTH-01: Student Registration', () => {
   });
 
   test('duplicate email shows error', async ({ page }) => {
+    // Backend returns { msg: ... } — SignupStudent.tsx extracts err.response.data.msg
     await page.route(`${API}/auth/register/student`, (route) =>
-      route.fulfill({ status: 400, json: { error: 'Email already registered' } })
+      route.fulfill({ status: 400, json: { msg: 'Email already registered' } })
     );
     await page.goto(`${BASE}/signup-student`);
     await page.getByLabel(/email/i).fill('existing@example.com');

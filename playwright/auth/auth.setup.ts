@@ -13,9 +13,21 @@ import { STORAGE_STATES } from '../playwright.config';
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-const users = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, '../../fixtures/users.json'), 'utf-8')
-);
+// fixtures/users.json is gitignored (contains real credentials for REAL_LOGIN mode).
+// For JWT mint mode (default), only email/role fields are used — password is irrelevant.
+// Fallback users are used if the file is absent (e.g. in CI without the file).
+const DEFAULT_USERS = {
+  self_enrolled_student: { email: 'self-student@test.com', name: 'Self Student', role: 'student', student_type: 'self_enrolled', password: '' },
+  teacher_enrolled_student: { email: 'enrolled-student@test.com', name: 'Enrolled Student', role: 'student', student_type: 'teacher_enrolled', password: '' },
+  teacher: { email: 'teacher@test.com', name: 'Test Teacher', role: 'teacher', password: '' },
+  institution: { email: 'institution@test.com', name: 'Test Institution', role: 'institution', institution_name: 'Test Academy', password: '' },
+};
+let users: typeof DEFAULT_USERS;
+try {
+  users = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../fixtures/users.json'), 'utf-8'));
+} catch {
+  users = DEFAULT_USERS;
+}
 
 const BASE_URL = process.env.PW_BASE_URL ?? 'http://localhost:8080';
 const USE_REAL_LOGIN = process.env.REAL_LOGIN === 'true';

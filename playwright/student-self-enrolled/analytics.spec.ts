@@ -10,7 +10,8 @@ const API = process.env.API_BASE_URL ?? 'http://localhost:5000';
 
 test.describe('UC-SE-08: Analytics', () => {
   test.beforeEach(async ({ page }) => {
-    await page.route(`${API}/api/analytics`, (r) =>
+    // Analytics endpoint is /analytics (no /api/ prefix) — uses fetch directly, not apiClient
+    await page.route(`${API}/analytics`, (r) =>
       r.fulfill({
         json: {
           subjects: [{ name: 'Chemistry', avg_score: 72 }],
@@ -28,7 +29,7 @@ test.describe('UC-SE-08: Analytics', () => {
   });
 
   test('empty analytics for new student shows no crash', async ({ page }) => {
-    await page.route(`${API}/api/analytics`, (r) =>
+    await page.route(`${API}/analytics`, (r) =>
       r.fulfill({ json: { subjects: [], topic_breakdown: [], recommendations: [] } })
     );
     await page.goto('/student/analytics');
