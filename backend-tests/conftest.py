@@ -29,6 +29,8 @@ def app():
     os.environ["APP_ENV"] = "local"
     os.environ["MONGO_URI"] = os.environ.get("MONGO_URI_TEST", "mongodb://localhost:27017/zoomiez_test")
     os.environ["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "test-secret-key")
+    # sq_evaluation_service raises ValueError at import time if missing — set before create_app
+    os.environ.setdefault("OPENAI_API_KEY", "sk-test-placeholder")
 
     from app import create_app
     flask_app = create_app()

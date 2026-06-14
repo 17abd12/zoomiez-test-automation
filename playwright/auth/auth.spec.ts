@@ -14,7 +14,7 @@ test.describe('UC-AUTH-03: Login', () => {
       route.fulfill({
         json: {
           token: 'mock-jwt',
-          user: { email: 'self-student@example.com', role: 'student', student_type: 'self_enrolled', onboarding_completed: true },
+          user: { email: 'self-student@example.com', role: 'student', roles: ['student'], student_type: 'self_enrolled', onboarding_completed: true },
         },
       })
     );
@@ -28,7 +28,7 @@ test.describe('UC-AUTH-03: Login', () => {
   test('teacher login redirects to /teacher', async ({ page }) => {
     await page.route(`${API}/auth/login`, (route) =>
       route.fulfill({
-        json: { token: 'mock-jwt', user: { email: 'teacher@example.com', role: 'teacher', onboarding_completed: true } },
+        json: { token: 'mock-jwt', user: { email: 'teacher@example.com', role: 'teacher', roles: ['teacher'], onboarding_completed: true } },
       })
     );
     await page.goto(`${BASE}/login/teacher`);
@@ -41,7 +41,7 @@ test.describe('UC-AUTH-03: Login', () => {
   test('institution login sets orgName in localStorage', async ({ page }) => {
     await page.route(`${API}/auth/login`, (route) =>
       route.fulfill({
-        json: { token: 'mock-jwt', user: { email: 'inst@example.com', role: 'institution', institution_name: 'Test Academy', onboarding_completed: true } },
+        json: { token: 'mock-jwt', user: { email: 'inst@example.com', role: 'institution', roles: ['institution'], institution_name: 'Test Academy', onboarding_completed: true } },
       })
     );
     await page.goto(`${BASE}/login/institution`);
@@ -80,7 +80,7 @@ test.describe('UC-AUTH-03: Login', () => {
   test('new student without onboarding redirects to /student/onboarding', async ({ page }) => {
     await page.route(`${API}/auth/login`, (route) =>
       route.fulfill({
-        json: { token: 'mock-jwt', user: { email: 'new@example.com', role: 'student', student_type: 'self_enrolled', onboarding_completed: false } },
+        json: { token: 'mock-jwt', user: { email: 'new@example.com', role: 'student', roles: ['student'], student_type: 'self_enrolled', onboarding_completed: false } },
       })
     );
     await page.goto(`${BASE}/login/student`);
@@ -92,17 +92,22 @@ test.describe('UC-AUTH-03: Login', () => {
 });
 
 test.describe('UC-AUTH-01: Student Registration', () => {
-  test('happy path shows verify-email page', async ({ page }) => {
+  test('happy path shows OTP verification step', async ({ page }) => {
     await page.route(`${API}/auth/register/student`, (route) =>
       route.fulfill({ status: 201, json: { message: 'Registration successful' } })
     );
     await page.goto(`${BASE}/signup-student`);
+    // SignupStudent form: Full Name, Email, Password, Academic Level (Radix Select), School/Institution
+    await page.getByLabel(/full name/i).fill('New Student');
     await page.getByLabel(/email/i).fill('new-student@example.com');
-    await page.getByLabel(/password/i).first().fill('SecurePass123');
-    await page.getByLabel(/confirm password/i).fill('SecurePass123');
-    await page.getByLabel(/name/i).fill('New Student');
+    await page.getByLabel(/password/i).fill('SecurePass123');
+    // Radix Select for Academic Level — click trigger (combobox), then pick option
+    await page.getByRole('combobox').click();
+    await page.getByRole('option', { name: /o-level/i }).click();
+    await page.getByLabel(/school.*institution/i).fill('Test School');
     await page.getByRole('button', { name: /sign up|create|register/i }).click();
-    await expect(page).toHaveURL(/\/verify-email/, { timeout: 8_000 });
+    // After success: same URL, component switches to OTP verification step — use heading to avoid strict mode
+    await expect(page.getByRole('heading', { name: /verify email/i })).toBeVisible({ timeout: 8_000 });
   });
 
   test('duplicate email shows error', async ({ page }) => {
@@ -111,22 +116,21 @@ test.describe('UC-AUTH-01: Student Registration', () => {
       route.fulfill({ status: 400, json: { msg: 'Email already registered' } })
     );
     await page.goto(`${BASE}/signup-student`);
+    await page.getByLabel(/full name/i).fill('Name');
     await page.getByLabel(/email/i).fill('existing@example.com');
-    await page.getByLabel(/password/i).first().fill('SecurePass123');
-    await page.getByLabel(/confirm password/i).fill('SecurePass123');
-    await page.getByLabel(/name/i).fill('Name');
+    await page.getByLabel(/password/i).fill('SecurePass123');
+    await page.getByRole('combobox').click();
+    await page.getByRole('option', { name: /o-level/i }).click();
+    await page.getByLabel(/school.*institution/i).fill('Test School');
     await page.getByRole('button', { name: /sign up|create|register/i }).click();
     await expect(page.getByText(/already registered|email.*taken/i)).toBeVisible({ timeout: 5_000 });
   });
 
-  test('password mismatch blocks submit', async ({ page }) => {
+  test('empty required fields prevent submission', async ({ page }) => {
+    // SignupStudent has no confirm password — test that empty required fields block navigation
     await page.goto(`${BASE}/signup-student`);
-    await page.getByLabel(/email/i).fill('new@example.com');
-    await page.getByLabel(/password/i).first().fill('Pass123');
-    await page.getByLabel(/confirm password/i).fill('DifferentPass');
-    await page.getByLabel(/name/i).fill('Name');
     await page.getByRole('button', { name: /sign up|create|register/i }).click();
-    // Should not navigate — still on signup page
+    // Required field HTML5 validation prevents form submission — stays on signup page
     await expect(page).toHaveURL(/signup-student/);
   });
 });
@@ -141,6 +145,7 @@ test.describe('UC-CROSS-02: Protected Route Redirects', () => {
   });
 
   test('direct access to /teacher redirects when not authenticated', async ({ page }) => {
+    await page.goto(BASE);
     await page.evaluate(() => localStorage.clear());
     await page.goto(`${BASE}/teacher`);
     await expect(page).toHaveURL(/\/login/, { timeout: 8_000 });

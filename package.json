@@ -18,7 +18,7 @@
     "test:allure": "allure generate allure-results -o docs/allure --clean",
     "test:allure:open": "allure open docs/allure",
     "typecheck": "tsc --noEmit",
-    "test:all": "npm run test:playwright && npm run test:cypress:run && npm run test:newman"
+    "test:all": "npm run test:playwright && npm run test:cypress:run && npm run test:newman && npm run test:k6 && npm run test:backend && npm run test:allure"
   },
   "devDependencies": {
     "@playwright/test": "^1.47.0",

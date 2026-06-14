@@ -47,7 +47,8 @@ test.describe('UC-TC-05: Teacher Evaluation — stubbed', () => {
   test('evaluation page loads with student and quiz selects', async ({ page }) => {
     await page.goto('/teacher/evaluation');
     await expect(page.getByText(/evaluation module/i)).toBeVisible({ timeout: 8_000 });
-    await expect(page.getByText(/Ahmed Khan/i)).toBeVisible({ timeout: 5_000 });
+    // Native <select> options are in DOM but not "visible" in a closed dropdown — check attachment instead
+    await expect(page.locator('option', { hasText: /Ahmed Khan/i })).toBeAttached({ timeout: 5_000 });
   });
 
   test('submit text evaluation returns report (OpenAI stubbed)', async ({ page }) => {
@@ -60,15 +61,16 @@ test.describe('UC-TC-05: Teacher Evaluation — stubbed', () => {
     await page.getByPlaceholder(/Question statement/i).fill('Q1a) Cathode: Hydrogen. Anode: Chlorine. Q1b) Because Cl- is more concentrated.');
     // Submit
     await page.getByRole('button', { name: /run evaluation/i }).click();
-    // Report tab should appear
-    await expect(page.getByText(/Evaluation Report/i)).toBeVisible({ timeout: 15_000 });
+    // Report tab appears — click it to reveal tab content (content hidden until tab activated)
+    await expect(page.getByText(/Evaluation Report/i).first()).toBeVisible({ timeout: 15_000 });
+    await page.getByRole('tab', { name: /evaluation report/i }).click();
     await expect(page.getByText(/14.*20|70%/i)).toBeVisible({ timeout: 5_000 });
   });
 
   test('no student selected shows validation error', async ({ page }) => {
     await page.goto('/teacher/evaluation');
     await page.getByRole('button', { name: /run evaluation/i }).click();
-    await expect(page.getByText(/select student/i)).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('Select student and a pre-made quiz first.')).toBeVisible({ timeout: 5_000 });
   });
 
   test('no input (no file, no text) shows validation error', async ({ page }) => {
@@ -76,7 +78,7 @@ test.describe('UC-TC-05: Teacher Evaluation — stubbed', () => {
     await page.locator('select').first().selectOption('enrolled-student@example.com');
     await page.locator('select').nth(1).selectOption('quiz-001');
     await page.getByRole('button', { name: /run evaluation/i }).click();
-    await expect(page.getByText(/upload.*paste|file or text/i)).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('Upload a solved paper (PNG/PDF) or paste extracted text.')).toBeVisible({ timeout: 5_000 });
   });
 
   test('print button opens new tab', async ({ page, context }) => {
@@ -85,7 +87,7 @@ test.describe('UC-TC-05: Teacher Evaluation — stubbed', () => {
     await page.locator('select').nth(1).selectOption('quiz-001');
     await page.getByPlaceholder(/Question statement/i).fill('Some answer text.');
     await page.getByRole('button', { name: /run evaluation/i }).click();
-    await expect(page.getByText(/Evaluation Report/i)).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(/Evaluation Report/i).first()).toBeVisible({ timeout: 15_000 });
 
     // Switch to report tab
     await page.getByRole('tab', { name: /evaluation report/i }).click();

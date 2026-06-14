@@ -28,7 +28,7 @@ export default defineConfig({
   // Starts the frontend dev server if not already running at BASE_URL.
   // reuseExistingServer:true means "if localhost:8080 is up, use it; else run the command".
   webServer: {
-    command: 'npm --prefix ../Frontend run dev',
+    command: 'npm --prefix ../../Frontend run dev',
     url: BASE_URL,
     reuseExistingServer: true,
     timeout: 120_000,

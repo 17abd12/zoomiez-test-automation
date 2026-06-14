@@ -10,6 +10,7 @@
 
 import { test, expect } from '@playwright/test';
 
+const BASE = process.env.PW_BASE_URL ?? 'http://localhost:8080';
 const API = process.env.API_BASE_URL ?? 'http://localhost:5000';
 
 // Inject localStorage state needed by PaperPracticePage and QuizLockContext.
@@ -62,7 +63,8 @@ async function injectMcqPaperState(page: any) {
 test.describe('UC-SE-03: Past Papers — Browse', () => {
   test('browse page renders subject cards', async ({ page }) => {
     await page.goto('/student/past-papers');
-    await expect(page.getByRole('heading', { name: /past papers/i })).toBeVisible();
+    // Page has both <h1>Past Papers</h1> and <h2>Why Practice with Past Papers?</h2> — use first()
+    await expect(page.getByRole('heading', { name: /past papers/i }).first()).toBeVisible();
     await expect(page.getByText(/chemistry/i).first()).toBeVisible();
   });
 
@@ -70,7 +72,7 @@ test.describe('UC-SE-03: Past Papers — Browse', () => {
     await page.goto('/student/past-papers');
     const chemCard = page.getByText(/chemistry/i).first();
     await chemCard.click();
-    await expect(page.getByText(/mcq|paper 1|o-level/i)).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText(/mcq|paper 1|o-level/i).first()).toBeVisible({ timeout: 5_000 });
   });
 });
 
@@ -117,17 +119,18 @@ test.describe('UC-SE-04: Paper Practice — MCQ', () => {
     await expect(page.getByText(/Which element has atomic number 6/i)).toBeVisible({ timeout: 8_000 });
     // "Exit Quiz" button calls attemptNavigation → sets showExitWarning → shows AlertDialog
     await page.getByRole('button', { name: /exit quiz/i }).click();
-    await expect(page.getByText(/exit quiz|leave quiz/i)).toBeVisible({ timeout: 5_000 });
+    // AlertDialog appears with role="alertdialog" — avoids strict mode from button+heading+action matches
+    await expect(page.getByRole('alertdialog')).toBeVisible({ timeout: 5_000 });
   });
 });
 
 test.describe('UC-SE-04: Route Restriction', () => {
-  test('unauthenticated user cannot access past-papers', async ({ browser }) => {
-    const context = await browser.newContext(); // No storageState — no auth
-    const page = await context.newPage();
+  test('unauthenticated user cannot access past-papers', async ({ page }) => {
+    // Navigate home, remove auth state, then try protected route
+    await page.goto(BASE);
+    await page.evaluate(() => localStorage.removeItem('app_state'));
+    // Redux reinitializes with empty state on next load → isLoggedIn:false → ProtectedRoute redirects
     await page.goto('/student/past-papers');
-    // ProtectedRoute redirects unauthenticated users to /login
     await expect(page).toHaveURL(/\/login/, { timeout: 8_000 });
-    await context.close();
   });
 });

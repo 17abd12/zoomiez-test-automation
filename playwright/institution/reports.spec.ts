@@ -75,7 +75,7 @@ test.describe('UC-IN-04: Institution Reports', () => {
 
   test('reports page renders controls', async ({ page }) => {
     await page.goto('/institution/reports');
-    await expect(page.getByText(/PDF.*Reports|PDF Generation/i)).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/PDF.*Reports|PDF Generation/i).first()).toBeVisible({ timeout: 8_000 });
     await expect(page.getByRole('button', { name: /preview/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /download pdf/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /print report/i })).toBeVisible();
@@ -90,7 +90,7 @@ test.describe('UC-IN-04: Institution Reports', () => {
     await selectRadixOption(page, 1, /Ahmed Khan/i);
 
     await page.getByRole('button', { name: /preview/i }).click();
-    await expect(page.getByText(/Ahmed Khan/i)).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/Ahmed Khan/i).first()).toBeVisible({ timeout: 8_000 });
     await expect(page.getByText(/12/)).toBeVisible({ timeout: 5_000 });
     await expect(page.getByText(/Atomic Structure/i)).toBeVisible();
     await expect(page.getByText(/Ahmed shows strong conceptual/i)).toBeVisible();
@@ -109,7 +109,7 @@ test.describe('UC-IN-04: Institution Reports', () => {
     // Select student then get preview
     await selectRadixOption(page, 1, /Ahmed Khan/i);
     await page.getByRole('button', { name: /preview/i }).click();
-    await expect(page.getByText(/Ahmed Khan/i)).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/Ahmed Khan/i).first()).toBeVisible({ timeout: 8_000 });
 
     const [printPage] = await Promise.all([
       context.waitForEvent('page'),
@@ -126,7 +126,7 @@ test.describe('UC-IN-04: Institution Reports', () => {
 
     await selectRadixOption(page, 1, /Ahmed Khan/i);
     await page.getByRole('button', { name: /preview/i }).click();
-    await expect(page.getByText(/Ahmed Khan/i)).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/Ahmed Khan/i).first()).toBeVisible({ timeout: 8_000 });
 
     const [printPage] = await Promise.all([
       context.waitForEvent('page'),
@@ -162,7 +162,7 @@ test.describe('UC-IN-02: Teacher Management', () => {
       r.fulfill({
         json: {
           teachers: [
-            { _id: 'tch-001', email: 'teacher@example.com', name: 'Test Teacher', status: 'active', subjects: ['Chemistry'], quiz_count: 5 }
+            { id: 'tch-001', email: 'teacher@example.com', name: 'Test Teacher', status: 'active', subjects: ['Chemistry'], classes: ['O-Level', 'A-Level'], quizzes: 5, evaluations: 2, notes: 3, last_active: '2024-03-15T00:00:00Z' }
           ],
           summary: { total_teachers: 1, total_quizzes: 5, total_evaluations: 0, avg_last_active_days: 2, weekly_progress: [] },
         },
@@ -186,6 +186,15 @@ test.describe('UC-IN-02: Teacher Management', () => {
     await page.route(`${API}/api/institution/teachers/invite`, (r) =>
       r.fulfill({ json: { message: 'Teacher invited' } })
     );
+    // openInviteModal() calls loadOnboardingSubjects() → getLevelsSubjects() → this endpoint
+    await page.route(`${API}/api/onboarding/levels-subjects`, (r) =>
+      r.fulfill({
+        json: {
+          'O-Level': ['Chemistry', 'Physics', 'Biology', 'Mathematics'],
+          'A-Level': ['Chemistry', 'Physics', 'Mathematics'],
+        },
+      })
+    );
   });
 
   test('teacher list renders', async ({ page }) => {
@@ -199,8 +208,9 @@ test.describe('UC-IN-02: Teacher Management', () => {
     const inviteBtn = page.getByRole('button', { name: /invite/i });
     if (await inviteBtn.isVisible()) {
       await inviteBtn.click();
-      await page.getByLabel(/email/i).fill('new-teacher@example.com');
-      await page.getByLabel(/name/i).fill('New Teacher');
+      // Labels have no htmlFor — use placeholder to locate inputs
+      await page.getByPlaceholder(/teacher@example\.com/i).fill('new-teacher@example.com');
+      await page.getByPlaceholder(/sarah johnson|e\.g\./i).fill('New Teacher');
       await page.getByRole('button', { name: /send invite|confirm/i }).click();
       await expect(page.getByText(/invited|success/i)).toBeVisible({ timeout: 8_000 });
     }

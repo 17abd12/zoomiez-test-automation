@@ -25,7 +25,7 @@ test.describe('UC-SE-08: Analytics', () => {
   test('analytics page renders charts and recommendations', async ({ page }) => {
     await page.goto('/student/analytics');
     await expect(page.getByText(/analytics/i)).toBeVisible({ timeout: 8_000 });
-    await expect(page.getByText(/chemistry/i)).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText(/chemistry/i).first()).toBeVisible({ timeout: 5_000 });
   });
 
   test('empty analytics for new student shows no crash', async ({ page }) => {
@@ -39,12 +39,13 @@ test.describe('UC-SE-08: Analytics', () => {
 
 test.describe('UC-SE-09: Notes — Browse & Bookmark', () => {
   test.beforeEach(async ({ page }) => {
-    await page.route(`${API}/notes/student/notes`, (r) =>
+    // Use RegExp — glob ** may not reliably match query strings in Playwright
+    await page.route(/\/notes\/student\/notes/, (r) =>
       r.fulfill({
         json: {
           notes: [
-            { _id: 'note-001', title: 'Electrolysis Notes', subject: 'Chemistry', class_level: 'O-Level', download_count: 12 },
-            { _id: 'note-002', title: 'Bonding PDF', subject: 'Chemistry', class_level: 'O-Level', download_count: 5 },
+            { _id: 'note-001', topic: 'Electrolysis Notes', subject: 'Chemistry', class_level: 'O-Level', download_count: 12 },
+            { _id: 'note-002', topic: 'Bonding PDF', subject: 'Chemistry', class_level: 'O-Level', download_count: 5 },
           ],
           total: 2,
         },
@@ -72,7 +73,7 @@ test.describe('UC-SE-09: Notes — Browse & Bookmark', () => {
   });
 
   test('empty state shows message', async ({ page }) => {
-    await page.route(`${API}/notes/student/notes`, (r) =>
+    await page.route(/\/notes\/student\/notes/, (r) =>
       r.fulfill({ json: { notes: [], total: 0 } })
     );
     await page.goto('/student/notes');
@@ -85,7 +86,8 @@ test.describe('UC-SE-11: Flashcards', () => {
     await page.route(`${API}/api/flashcards/subjects`, (r) =>
       r.fulfill({ json: { 'O-Level': ['Chemistry', 'Physics'] } })
     );
-    await page.route(`${API}/api/flashcards/cards`, (r) =>
+    // Flashcards cards endpoint always has ?level=&subject= query params
+    await page.route(`${API}/api/flashcards/cards**`, (r) =>
       r.fulfill({
         json: {
           cards: [
@@ -99,6 +101,6 @@ test.describe('UC-SE-11: Flashcards', () => {
 
   test('flashcard deck loads', async ({ page }) => {
     await page.goto('/student/flashcards');
-    await expect(page.getByText(/flashcard/i)).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/flashcard/i).first()).toBeVisible({ timeout: 8_000 });
   });
 });

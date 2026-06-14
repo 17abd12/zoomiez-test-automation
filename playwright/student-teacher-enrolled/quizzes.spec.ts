@@ -6,6 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 
+const BASE = process.env.PW_BASE_URL ?? 'http://localhost:8080';
 const API = process.env.API_BASE_URL ?? 'http://localhost:5000';
 
 test.describe('UC-TE-02: Teacher-Assigned Quiz', () => {
@@ -86,8 +87,8 @@ test.describe('UC-TE-02: Teacher-Assigned Quiz', () => {
     await expect(page.getByText(/Chemistry MCQ Test 1/i)).toBeVisible({ timeout: 8_000 });
     await page.getByRole('button', { name: /start|play|begin/i }).first().click();
     await expect(page.getByText(/Q1 text/i)).toBeVisible({ timeout: 10_000 });
-    await page.getByText('A').first().click();
-    await page.getByRole('button', { name: /submit/i }).click();
+    await page.getByRole('radio').first().click();
+    await page.getByRole('button', { name: /submit/i }).first().click();
     await expect(page.getByText(/1.*3|33%/i)).toBeVisible({ timeout: 8_000 });
   });
 
@@ -96,7 +97,7 @@ test.describe('UC-TE-02: Teacher-Assigned Quiz', () => {
       r.fulfill({ json: { success: true, quizzes: [] } })
     );
     await page.goto('/student/quizzes');
-    await expect(page.getByText(/no quizzes|no assignment/i)).toBeVisible({ timeout: 8_000 });
+    await expect(page.getByText(/No Upcoming Quizzes|No Completed Quizzes|no.*quizzes/i)).toBeVisible({ timeout: 8_000 });
   });
 
   test('quiz lock shows dialog on navigation attempt', async ({ page }) => {
@@ -145,11 +146,11 @@ test.describe('UC-TE-03: View Quiz Results', () => {
   });
 
   test('self_enrolled cannot access /student/results', async ({ browser }) => {
-    const context = await browser.newContext();
+    const context = await browser.newContext({ baseURL: BASE });
     const page = await context.newPage();
     await page.goto('/');
     await page.evaluate(() => {
-      // isLoggedIn REQUIRED — ProtectedRoute checks this to decide redirect vs login
+      // isLoggedIn + roles REQUIRED — ProtectedRoute uses roles array for allowedStudentTypes check
       localStorage.setItem('app_state', JSON.stringify({
         auth: {
           isLoggedIn: true,
@@ -157,6 +158,7 @@ test.describe('UC-TE-03: View Quiz Results', () => {
           user: {
             email: 'self@example.com',
             role: 'student',
+            roles: ['student'],
             student_type: 'self_enrolled',
             onboarding_completed: true,
           },
@@ -172,41 +174,44 @@ test.describe('UC-TE-03: View Quiz Results', () => {
 
 test.describe('UC-TE-04: Evaluation Report', () => {
   test.beforeEach(async ({ page }) => {
+    // getStudentEvaluationReport expects response.data.report — processResponse wraps body as
+    // { success: true, data: <body> }, so mock must return { report: { ... } } (no top-level success)
     await page.route(`${API}/api/student-quiz/evaluations/report/eval-001`, (r) =>
       r.fulfill({
         json: {
-          success: true,
-          submission_id: 'eval-001',
-          student_email: 'enrolled-student@example.com',
-          quiz_title: 'Chemistry SQ 1',
-          subject: 'Chemistry',
-          total_marks_obtained: 14,
-          total_marks_available: 20,
-          percentage: 70,
-          evaluations: [
-            {
-              root_question_id: 'q1',
-              question_number: 1,
-              part_label: 'a',
-              marks_awarded: 2,
-              marks_total: 2,
-              is_correct: true,
-              feedback: 'Correct.',
-              mistake: null,
-              improve: null,
-            },
-            {
-              root_question_id: 'q1',
-              question_number: 1,
-              part_label: 'b',
-              marks_awarded: 2,
-              marks_total: 4,
-              is_correct: false,
-              feedback: 'Partial credit.',
-              mistake: 'Missed discharge potential.',
-              improve: 'Review selective discharge rules.',
-            },
-          ],
+          report: {
+            submission_id: 'eval-001',
+            student_email: 'enrolled-student@example.com',
+            quiz_title: 'Chemistry SQ 1',
+            subject: 'Chemistry',
+            total_marks_obtained: 14,
+            total_marks_available: 20,
+            percentage: 70,
+            evaluations: [
+              {
+                root_question_id: 'q1',
+                question_number: 1,
+                part_label: 'a',
+                marks_awarded: 2,
+                marks_total: 2,
+                is_correct: true,
+                feedback: 'Correct.',
+                mistake: null,
+                improve: null,
+              },
+              {
+                root_question_id: 'q1',
+                question_number: 1,
+                part_label: 'b',
+                marks_awarded: 2,
+                marks_total: 4,
+                is_correct: false,
+                feedback: 'Partial credit.',
+                mistake: 'Missed discharge potential.',
+                improve: 'Review selective discharge rules.',
+              },
+            ],
+          },
         },
       })
     );
